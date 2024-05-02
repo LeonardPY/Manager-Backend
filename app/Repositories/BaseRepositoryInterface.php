@@ -4,15 +4,17 @@ namespace App\Repositories;
 
 interface BaseRepositoryInterface
 {
-    public function all();
+    public function all(): mixed;
 
-    public function findOrFail($id);
+    public function findOrFail($id): mixed;
 
-    public function create(array $data);
+    public function create(array $data): mixed;
 
-    public function update($id, array $data);
+    public function insert(array $data): mixed;
 
-    public function delete($id);
+    public function update($id, array $data): mixed;
+
+    public function delete($id): mixed;
 
     public function first(): mixed;
 
