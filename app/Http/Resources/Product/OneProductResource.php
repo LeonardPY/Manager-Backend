@@ -4,7 +4,7 @@ namespace App\Http\Resources\Product;
 
 use Illuminate\Http\Request;
 
-class ProductResource extends BaseProductResource
+class OneProductResource extends BaseProductResource
 {
     /**
      * Transform the resource into an array.
@@ -13,11 +13,11 @@ class ProductResource extends BaseProductResource
      */
     public function toArray(Request $request): array
     {
-
         return array_merge(parent::toArray($request), [
             'category' => $this->resource->category,
             'mainPicture' => $this->resource->mainPicture,
-            'description' => $this->resource->description
+            'description' => $this->resource->description,
+            'pictures' => $this->resource->pictures
         ]);
     }
 }

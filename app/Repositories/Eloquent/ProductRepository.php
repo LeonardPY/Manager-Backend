@@ -16,7 +16,9 @@ final class ProductRepository extends BaseRepository implements ProductRepositor
 
     public function allProduct(ProductFilter $filter, int $userId)
     {
-        return $this->model->where('user_id', $userId)->with(['category'=> function($query) {
+        return $this->model->where('user_id', $userId)->with(['description' => function ($query) {
+            return $query->select('id', 'product_id','short_description');
+        }, 'category'=> function($query) {
            return $query->select('id', 'name');
         }])->whereNot('status', ProductStatusEnum::DELETED->value)->filter($filter)->paginate($filter->PER_PAGE);
     }
@@ -24,5 +26,12 @@ final class ProductRepository extends BaseRepository implements ProductRepositor
     public function slugExists(string $slug): object|bool
     {
         return $this->model->where('slug', $slug)->exists();
+    }
+
+    public function findProductById(int $id)
+    {
+        return $this->model->with(['description','pictures', 'category'=> function($query) {
+            return $query->select('id', 'name');
+        }])->whereNot('status', ProductStatusEnum::DELETED->value)->findOrFail($id);
     }
 }

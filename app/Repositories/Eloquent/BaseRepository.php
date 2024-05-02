@@ -15,27 +15,32 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all()
+    public function all(): mixed
     {
         return $this->model->all();
     }
 
-    public function findOrFail($id)
+    public function findOrFail($id): mixed
     {
         return $this->model->findOrFail($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): mixed
     {
         return $this->model->create($data);
     }
 
-    public function  update($id, array $data)
+    public function insert(array $data): mixed
+    {
+        return $this->model->insert($data);
+    }
+
+    public function  update($id, array $data): mixed
     {
         return $this->model->findOrFail($id)->update($data);
     }
 
-    public function delete($id)
+    public function delete($id): mixed
     {
         return $this->model->findOrFail($id)->delete();
     }

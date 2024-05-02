@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
@@ -29,7 +30,8 @@ class Product extends Model
         'category_id',
         'user_id',
         'product_code',
-        'discount_percent'
+        'discount_percent',
+        'parent_id'
     ];
 
     protected $casts = [
@@ -54,5 +56,20 @@ class Product extends Model
     public function mainPicture(): HasOne
     {
         return $this->hasOne(ProductMainPicture::class, 'product_id', 'id');
+    }
+
+    public function pictures(): HasMany
+    {
+        return $this->hasMany(ProductPicture::class, 'product_id', 'id');
+    }
+
+    public function description(): HasOne
+    {
+        return $this->hasOne(ProductDescription::class, 'product_id', 'id');
+    }
+
+    public function haveAccess(int $userId): bool
+    {
+        return $this->user_id === $userId;
     }
 }

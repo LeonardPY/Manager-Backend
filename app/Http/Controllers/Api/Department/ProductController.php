@@ -10,6 +10,7 @@ use App\Http\Requests\Product\ShowProductRequest;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\PaginationResource;
+use App\Http\Resources\Product\OneProductResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\SuccessResource;
 use App\Models\Product;
@@ -59,10 +60,10 @@ class ProductController extends Controller
     public function show(ShowProductRequest$request, Product $product): SuccessResource
     {
         $request->validated();
-        $product = $this->productRepository->findOrFail($product->getAttribute('id'));
+        $product = $this->productRepository->findProductById($product->getAttribute('id'));
 
         return SuccessResource::make([
-            'data' => $product,
+            'data' => OneProductResource::make($product),
         ]);
     }
 

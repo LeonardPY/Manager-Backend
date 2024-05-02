@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 //Repository
+use App\Repositories\Eloquent\ProductDescriptionRepository;
+use App\Repositories\Eloquent\ProductPictureRepository;
 use App\Repositories\Eloquent\UserRepository;
 use App\Repositories\Eloquent\CategoryRepository;
 use App\Repositories\Eloquent\ProductRepository;
@@ -10,6 +12,8 @@ use App\Repositories\Eloquent\ProductMainPictureRepository;
 use App\Repositories\Eloquent\UserAddressRepository;
 
 //Interface
+use App\Repositories\ProductDescriptionRepositoryInterface as ProductDescriptionRepositoryContract;
+use App\Repositories\ProductPictureRepositoryInterface as ProductPictureRepositoryContract;
 use App\Repositories\UserRepositoryInterface as UserRepositoryContract;
 use App\Repositories\CategoryRepositoryInterface as CategoryRepositoryContract;
 use App\Repositories\ProductRepositoryInterface as ProductRepositoryContract;
@@ -31,6 +35,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductRepositoryContract::class, ProductRepository::class);
         $this->app->bind(ProductMainPictureRepositoryContract::class, ProductMainPictureRepository::class);
         $this->app->bind(UserAddressRepositoryContract::class, UserAddressRepository::class);
+        $this->app->bind(ProductDescriptionRepositoryContract::class, ProductDescriptionRepository::class);
+        $this->app->bind(ProductPictureRepositoryContract::class, ProductPictureRepository::class);
     }
 
     /**

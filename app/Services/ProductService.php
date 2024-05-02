@@ -80,5 +80,16 @@ readonly class ProductService
         }
     }
 
+    public function uploadPictures(array $pictures, int $productId): array
+    {
+        $picturesPath = [];
+        foreach ($pictures['pictures'] as $picture) {
+            $picturesPath[] = [
+                'product_id' => $productId,
+                'path' => basename($this->pictureService->uploadPicture($picture, PicturesPathEnum::PRODUCT->value . "/" . $productId))
+            ];
+        }
+        return $picturesPath;
+    }
 }
 
