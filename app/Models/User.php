@@ -4,12 +4,14 @@ namespace App\Models;
 
 use App\Enums\UserRoleEnum;
 use App\Models\Traits\Filterable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasFactory, Notifiable, Filterable;
 
@@ -68,8 +70,13 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    /**
+     * Determine if the user is an admin.
+     *
+     * @return bool
+     */
     public function isAdmin(): bool
     {
-        return $this->user_role_id === UserRoleEnum::ADMIN;
+        return $this->getAttribute('user_role_id') === UserRoleEnum::ADMIN;
     }
 }

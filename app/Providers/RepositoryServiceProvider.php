@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 //Repository
+use App\Repositories\Eloquent\FavoriteRepository;
 use App\Repositories\Eloquent\ProductDescriptionRepository;
 use App\Repositories\Eloquent\ProductPictureRepository;
 use App\Repositories\Eloquent\UserRepository;
@@ -12,6 +13,7 @@ use App\Repositories\Eloquent\ProductMainPictureRepository;
 use App\Repositories\Eloquent\UserAddressRepository;
 
 //Interface
+use App\Repositories\FavoriteRepositoryInterface as FavoriteRepositoryContract;
 use App\Repositories\ProductDescriptionRepositoryInterface as ProductDescriptionRepositoryContract;
 use App\Repositories\ProductPictureRepositoryInterface as ProductPictureRepositoryContract;
 use App\Repositories\UserRepositoryInterface as UserRepositoryContract;
@@ -20,7 +22,6 @@ use App\Repositories\ProductRepositoryInterface as ProductRepositoryContract;
 use App\Repositories\ProductMainPictureRepositoryInterface as ProductMainPictureRepositoryContract;
 use App\Repositories\UserAddressRepositoryInterface as UserAddressRepositoryContract;
 
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -37,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserAddressRepositoryContract::class, UserAddressRepository::class);
         $this->app->bind(ProductDescriptionRepositoryContract::class, ProductDescriptionRepository::class);
         $this->app->bind(ProductPictureRepositoryContract::class, ProductPictureRepository::class);
+        $this->app->bind(FavoriteRepositoryContract::class, FavoriteRepository::class);
     }
 
     /**
@@ -44,8 +46,6 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('authorize', function (object $user, object $userRelObject) {
-            return $user->id === $userRelObject->user_id;
-        });
+        //
     }
 }

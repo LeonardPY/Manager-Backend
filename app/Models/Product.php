@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
+
     use HasFactory;
     use Filterable;
 
@@ -70,6 +71,6 @@ class Product extends Model
 
     public function haveAccess(int $userId): bool
     {
-        return $this->user_id === $userId;
+        return $this->getAttribute('user_id') === $userId;
     }
 }
