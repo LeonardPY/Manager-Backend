@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\DepartmentMiddleware;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -22,21 +20,9 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
 
-            Route::middleware(['api', 'auth:api', 'admin'])
+            Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
-
-            Route::middleware(['api', 'auth:api', 'department'])
-                ->prefix('api/department')
-                ->group(base_path('routes/department.php'));
-
-            Route::middleware('api')
-                ->prefix('api/auth')
-                ->group(base_path('routes/auth.php'));
-
-            Route::middleware(['api', 'auth:api'])
-                ->prefix('api/user')
-                ->group(base_path('routes/user.php'));
         });
     }
 
