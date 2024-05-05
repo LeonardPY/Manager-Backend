@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Department\CategoryController;
 use App\Http\Controllers\Api\Department\ProductController;
 use App\Http\Controllers\Api\Department\ProductDescriptionController;
@@ -11,7 +12,7 @@ use App\Http\Controllers\Api\User\UserAddressController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('/login', [AuthController::class, 'login']);
+
 
 //api/admin
 Route::middleware(['auth:api','verified','admin',])->prefix('admin')->group(function () {
@@ -24,6 +25,10 @@ Route::middleware(['auth:api', 'verified'])->prefix('auth')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user', [AuthController::class, 'user']);
 });
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
+Route::post('/check-code', [ForgotPasswordController::class, 'checkResetCode']);
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
 //api/department
 Route::middleware(['auth:api','verified','department'])->prefix('department')->group(function () {
