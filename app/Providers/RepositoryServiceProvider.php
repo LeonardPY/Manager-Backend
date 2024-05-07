@@ -4,6 +4,8 @@ namespace App\Providers;
 
 //Repository
 use App\Repositories\Eloquent\FavoriteRepository;
+use App\Repositories\Eloquent\OrderProductRepository;
+use App\Repositories\Eloquent\OrderRepository;
 use App\Repositories\Eloquent\ProductDescriptionRepository;
 use App\Repositories\Eloquent\ProductPictureRepository;
 use App\Repositories\Eloquent\ResetPasswordRepository;
@@ -15,6 +17,8 @@ use App\Repositories\Eloquent\UserAddressRepository;
 
 //Interface
 use App\Repositories\FavoriteRepositoryInterface as FavoriteRepositoryContract;
+use App\Repositories\OrderProductRepositoryInterface as OrderProductRepositoryContract;
+use App\Repositories\OrderRepositoryInterface as OrderRepositoryContract;
 use App\Repositories\ProductDescriptionRepositoryInterface as ProductDescriptionRepositoryContract;
 use App\Repositories\ProductPictureRepositoryInterface as ProductPictureRepositoryContract;
 use App\Repositories\ResetPasswordRepositoryInterface as ResetPasswordRepositoryContract;
@@ -42,6 +46,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductPictureRepositoryContract::class, ProductPictureRepository::class);
         $this->app->bind(FavoriteRepositoryContract::class, FavoriteRepository::class);
         $this->app->bind(ResetPasswordRepositoryContract::class, ResetPasswordRepository::class);
+        $this->app->bind(OrderRepositoryContract::class, OrderRepository::class);
+        $this->app->bind(OrderProductRepositoryContract::class, OrderProductRepository::class);
     }
 
     /**

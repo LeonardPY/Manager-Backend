@@ -17,4 +17,9 @@ final class UserAddressRepository extends BaseRepository implements UserAddressR
     {
         return $this->model->with(['user', 'country'])->where('user_id', $userId)->get();
     }
+
+    public function getAddressById(int $id): object
+    {
+        return $this->model->findOrFail($id);
+    }
 }

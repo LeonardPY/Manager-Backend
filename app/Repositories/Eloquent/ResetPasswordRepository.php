@@ -12,8 +12,16 @@ final class ResetPasswordRepository extends BaseRepository implements ResetPassw
         parent::__construct($model);
     }
 
-    public function findByEmail(string $email)
+    public function findByEmail(string $email): object
     {
-        return $this->model->where('email', $email)->first();
+        return $this->model->where('email', $email)->firstOrFail();
+    }
+
+    public function findBy(string $email, string $code): ?object
+    {
+        return $this->model->where([
+            ['email' => $email],
+            ['code' => $code]
+        ])->first();
     }
 }
