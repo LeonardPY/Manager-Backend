@@ -52,7 +52,7 @@ class ForgotPasswordController extends Controller
     public function resetPassword(ResetPasswordRequest $request): SuccessResource|ErrorResource
     {
         $data = $request->validated();
-        $code = $this->passwordRepository->findByEmail($data['email']);
+        $code = $this->passwordRepository->findBy($data['email'], $data['code']);
 
         if (!$code) {
             return ErrorResource::make([

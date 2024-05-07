@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\Department\CategoryController;
 use App\Http\Controllers\Api\Department\ProductController;
 use App\Http\Controllers\Api\Department\ProductDescriptionController;
 use App\Http\Controllers\Api\Department\ProductPictureController;
+use App\Http\Controllers\Api\Order\OrderController;
+use App\Http\Controllers\Api\Order\OrderProductController;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\UserAddressController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +50,11 @@ Route::middleware(['auth:api','verified','department'])->prefix('department')->g
     Route::post('/product/{product}/description', [ProductDescriptionController::class, 'store']);
     Route::put('/product/{product}/description', [ProductDescriptionController::class, 'update']);
     Route::delete('/product/productPicture/{productPicture}', [ProductPictureController::class, 'destroy']);
+
+    //Order
+    Route::apiResource('/order', OrderController::class);
+    //OrderProduct
+    Route::apiResource('/order-product', OrderProductController::class)->only(['store', 'update', 'destroy']);
 });
 
 //user
