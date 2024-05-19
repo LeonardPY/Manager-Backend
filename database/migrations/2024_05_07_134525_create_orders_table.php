@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Currencies;
 use App\Enums\OrderStatus;
 use App\Models\User;
 use App\Models\UserAddress;
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->json('shipping_data')->nullable();
 
             $table->decimal('total_price')->nullable();
+            $table->string('currency')->default(Currencies::AMD->value);
             $table->decimal('shipping_cost')->default(0.00);
             $table->decimal('insurance_cost')->default(0.00);
             $table->decimal('refunded_price')->nullable();

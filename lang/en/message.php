@@ -36,4 +36,5 @@
         'account_deleted' => 'Your Account Has Deleted!',
         'address' => 'The user does not have a address',
         'access_denied' => 'access denied!',
+        'department_conflict' => 'this product and department conflict',
     ];

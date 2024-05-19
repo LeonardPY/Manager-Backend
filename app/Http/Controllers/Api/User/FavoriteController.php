@@ -39,7 +39,7 @@ final class FavoriteController extends Controller
         $data = $request->validated();
         $this->favoriteRepository->updateOrCreate($data + ['user_id' => auth()->id()], []);
         return SuccessResource::make([
-            'message' => 'successfully created'
+            'message' => trans('messages.successfully_created'),
         ]);
     }
 
@@ -49,11 +49,11 @@ final class FavoriteController extends Controller
             $favorite->delete();
 
             return new SuccessResource([
-                'message' => 'successfully deleted!',
+                'message' => trans('messages.successfully_deleted'),
             ]);
         }
         return ErrorResource::make([
-            'message' => 'Access Denied'
+            'message' => trans('messages.access_denied'),
         ]);
     }
 
@@ -66,7 +66,7 @@ final class FavoriteController extends Controller
         }
 
         return SuccessResource::make([
-            'massage' => 'successfully save!'
+            'massage' => trans('messages.success'),
         ]);
     }
 }

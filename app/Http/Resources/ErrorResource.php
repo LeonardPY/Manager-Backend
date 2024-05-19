@@ -11,9 +11,10 @@ use Illuminate\Http\Response;
 
 class ErrorResource extends JsonResource
 {
+    protected int $statusCode = 500;
     public function withResponse(Request $request, Response|JsonResponse $response): void
     {
-        $response->setStatusCode(500);
+        $response->setStatusCode($this->statusCode);
     }
 
     public function toArray($request): array
@@ -24,5 +25,11 @@ class ErrorResource extends JsonResource
             'success' => false,
             'message' => $this['message'] ?? '',
         ];
+    }
+
+    public function setStatusCode(int $statusCode): self
+    {
+        $this->statusCode = $statusCode;
+        return $this;
     }
 }

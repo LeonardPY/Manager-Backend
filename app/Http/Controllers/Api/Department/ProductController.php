@@ -53,7 +53,7 @@ class ProductController extends Controller
         $this->productService->mainUploadPicture($data, $product);
 
         return SuccessResource::make([
-            'message' => 'Created Successfully'
+            'message' => trans('messages.successfully_created'),
         ]);
     }
 
@@ -76,7 +76,7 @@ class ProductController extends Controller
         $this->productRepository->update($product->getAttribute('id'), Arr::except($data, ['picture']));
 
         return SuccessResource::make([
-            'message' => 'Updated Successfully'
+            'message' => trans('messages.successfully_updated'),
         ]);
     }
 
@@ -86,7 +86,7 @@ class ProductController extends Controller
         $product = $this->productRepository->findOrFail($product->getAttribute('id'));
         $this->productRepository->update($product->id, ['status' => ProductStatusEnum::DELETED->value]);
         return SuccessResource::make([
-            'message' => 'Deleted Successfully'
+            'message' => trans('messages.successfully_deleted'),
         ]);
     }
 }

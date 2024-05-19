@@ -20,6 +20,6 @@ final class UserAddressRepository extends BaseRepository implements UserAddressR
 
     public function getAddressById(int $id): object
     {
-        return $this->model->findOrFail($id);
+        return $this->model->with('country')->findOrFail($id);
     }
 }

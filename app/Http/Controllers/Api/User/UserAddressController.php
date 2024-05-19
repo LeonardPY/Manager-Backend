@@ -36,7 +36,7 @@ class UserAddressController extends Controller
 
         return SuccessResource::make([
             'data' => $address,
-            'message' => 'successfully_created',
+            'message' => trans('messages.successfully_created'),
         ]);
     }
 
@@ -49,7 +49,7 @@ class UserAddressController extends Controller
             ]);
         }
         return ErrorResource::make([
-            'message' => 'Access Denied'
+            'message' => trans('messages.access_denied'),
         ]);
     }
 
@@ -64,7 +64,7 @@ class UserAddressController extends Controller
             ]);
         }
         return ErrorResource::make([
-            'message' => 'Access Denied'
+            'message' =>  trans('messages.access_denied')
         ]);
     }
 
@@ -75,11 +75,11 @@ class UserAddressController extends Controller
             $userAddress->delete();
 
             return new SuccessResource([
-                'message' => 'successfully_deleted',
+                'message' => trans('messages.successfully_deleted'),
             ]);
         }
         return ErrorResource::make([
-            'message' => 'Access Denied'
+            'message' =>  trans('messages.access_denied')
         ]);
     }
 }

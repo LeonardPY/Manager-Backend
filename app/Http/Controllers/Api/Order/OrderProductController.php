@@ -32,10 +32,16 @@ class OrderProductController extends Controller
 
         $product = $this->productRepository->findOrFail((int)$validated['product_id']);
 
+        if (!$product->haveAccess($validated['department_id'])) {
+            return ErrorResource::make([
+                'message' => trans('message.department_conflict'),
+            ])->setStatusCode(409);
+        };
+
         if ($product->count < $validated['quantity']) {
-            return new ErrorResource([
+            return ErrorResource::make([
                 'message' => trans('message.product_is_out_of_stock'),
-            ]);
+            ])->setStatusCode(423);
         }
         $order = $this->orderRepository->updateOrCreate(['user_id' => auth()->id(), 'department_id' => $validated['department_id'], 'status' => OrderStatus::IN_CART->value], []);
 

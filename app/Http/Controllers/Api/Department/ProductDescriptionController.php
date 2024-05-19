@@ -39,11 +39,11 @@ class ProductDescriptionController extends Controller
 
         $user = auth()->user();
         if ($product->haveAccess(auth()->id()) || $user->isAdmin()) {
-            $productPictureValidatedData = $this->productService->uploadPictures($productPictureValidated, $product->getAttribute('id'));
-            $this->descriptionRepository->updateOrCreate(['product_id' => $product->getAttribute('id')], $productDescriptionValidated);
+            $productPictureValidatedData = $this->productService->uploadPictures($productPictureValidated, $product->id);
+            $this->descriptionRepository->updateOrCreate(['product_id' => $product->id], $productDescriptionValidated);
             $this->productPictureRepository->insert($productPictureValidatedData);
             return SuccessResource::make([
-                'message' => 'success!'
+                'message' => trans('messages.successfully_created'),
             ]);
         }
         return (new ErrorResource([
@@ -52,7 +52,7 @@ class ProductDescriptionController extends Controller
     }
 
 
-    public function update(UpdateProductDescriptionRequest $productDescriptionRequest, Product $product): SuccessResource|Response
+    public function update(UpdateProductDescriptionRequest $productDescriptionRequest, Product $product): SuccessResource|ErrorResource
     {
         /** @var Product $product **/
         /** @var User $user **/
@@ -60,14 +60,14 @@ class ProductDescriptionController extends Controller
         $user = auth()->user();
 
         if ($product->haveAccess(auth()->id()) || $user->isAdmin()) {
-            $this->descriptionRepository->updateOrCreate(['product_id' => $product->getAttribute('id')], $productDescriptionValidated);
+            $this->descriptionRepository->updateOrCreate(['product_id' => $product->id], $productDescriptionValidated);
             return SuccessResource::make([
-                'message' => 'success!'
+                'message' => trans('messages.successfully_updated'),
             ]);
         }
-        return (new ErrorResource([
-            'message' => 'Forbidden'
-        ]))->response()->setStatusCode(403);
+        return ErrorResource::make([
+            'message' => trans('messages.failed')
+        ])->setStatusCode(403);
     }
 
 }

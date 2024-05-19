@@ -74,12 +74,13 @@ class AuthController extends Controller
             try {
                 JWTAuth::invalidate($token);
             } catch (Exception) {
-                return ErrorResource::make(['message' => 'Failed to invalidate token']);
+                return ErrorResource::make([
+                    'message' => trans('messages.invalid_token')
+                ]);
             }
         }
-
         return SuccessResource::make([
-            'message' => 'Successfully logged out'
+            'message' => trans('messages.logged_out')
         ]);
     }
 

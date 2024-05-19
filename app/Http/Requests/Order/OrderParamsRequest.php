@@ -5,7 +5,7 @@ namespace App\Http\Requests\Order;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOrderRequest extends FormRequest
+class OrderParamsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +23,12 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_address_id' => [
-                'required',
-                'sometimes',
-                'exists:user_addresses,id'
-            ],
             'currency' => [
                 'required',
                 'sometimes',
                 'exists:countries,currency'
             ]
+
         ];
     }
 }

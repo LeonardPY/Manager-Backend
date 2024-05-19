@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+/**
+ * App\Models\Order
+ *
+ * @property int id
+ * @property int user_id
+ * @property int department_id
+ * @property int user_address_id
+ * @property int status
+ * @property array shipping_data
+ * @property float total_price
+ */
 class Order extends Model
 {
     use HasFactory;
@@ -20,6 +32,7 @@ class Order extends Model
         'status',
         'shipping_data',
         'total_price',
+        'currency',
         'shipping_cost',
         'insurance_cost',
         'refunded_price'

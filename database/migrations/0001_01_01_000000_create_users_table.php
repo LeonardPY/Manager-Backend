@@ -2,6 +2,7 @@
 
 use App\Enums\UserRoleEnum;
 use App\Enums\UserStatusEnum;
+use App\Models\Country;
 use App\Models\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->foreignIdFor(UserRole::class)->default(UserRoleEnum::USER->value)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Country::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('logo')->nullable();

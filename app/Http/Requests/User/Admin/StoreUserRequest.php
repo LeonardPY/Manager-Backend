@@ -41,6 +41,10 @@ class StoreUserRequest extends FormRequest
                 'sometimes',
                 'exists:user_roles,id'
             ],
+            'country_id' => [
+                'required',
+                'exists:countries,id'
+            ],
             'email' => [
                 'required',
                 'email',
