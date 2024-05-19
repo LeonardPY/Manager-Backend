@@ -25,6 +25,7 @@ class UserSeeder extends Seeder
                 'name' => 'User',
                 'email' => 'user@gmail.com',
                 'user_role_id' => 1,
+                'country_id' => 1,
                 'password' => 'user123',
                 'email_verified_at' => '2024-01-01 00:00:00'
             ],
@@ -32,6 +33,7 @@ class UserSeeder extends Seeder
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
                 'user_role_id' => 2,
+                'country_id' => 1,
                 'password' => 'admin123',
                 'email_verified_at' => '2024-01-02 00:00:00'
             ],
@@ -39,6 +41,7 @@ class UserSeeder extends Seeder
                 'name' => 'Department Store',
                 'email' => 'store@gmail.com',
                 'user_role_id' => 3,
+                'country_id' => 1,
                 'password' => 'store123',
                 'email_verified_at' => '2024-01-03 00:00:00'
             ],
@@ -46,6 +49,7 @@ class UserSeeder extends Seeder
                 'name' => 'Department Factory',
                 'email' => 'factory@gmail.com',
                 'user_role_id' => 4,
+                'country_id' => 1,
                 'password' => 'factory123',
                 'email_verified_at' => '2024-01-04 00:00:00'
             ],

@@ -32,7 +32,7 @@ class UserController extends Controller
         $users = $this->userRepository->getUsers($filter);
         return SuccessResource::make([
             'data' => UserResource::collection($users),
-            'message' => 'users'
+            'message' => trans('message.success')
         ]);
     }
 
@@ -50,7 +50,7 @@ class UserController extends Controller
     {
         return SuccessResource::make([
             'data' => UserResource::make($user),
-            'message' => 'user'
+            'message' => trans('message.success')
         ]);
     }
 
@@ -61,7 +61,7 @@ class UserController extends Controller
         $user->update($data);
 
         return SuccessResource::make([
-            'message' => 'user successfully updated',
+            'message' => trans('message.successfully_updated'),
             'data' => $user
         ]);
     }
@@ -71,7 +71,7 @@ class UserController extends Controller
         $user->update(['status' => UserStatusEnum::DELETED->value]);
 
         return SuccessResource::make([
-            'message' => 'user successfully deleted',
+            'message' => trans('message.successfully_deleted'),
         ]);
     }
 }

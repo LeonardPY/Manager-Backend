@@ -6,8 +6,11 @@ use App\Enums\UserRoleEnum;
 use App\Models\Traits\Filterable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Queue\Connectors\BeanstalkdConnector;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
@@ -26,6 +29,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'email',
         'password',
         'user_role_id',
+        'country_id',
         'status',
         'logo',
     ];
@@ -78,5 +82,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function isAdmin(): bool
     {
         return $this->getAttribute('user_role_id') === UserRoleEnum::ADMIN;
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->BelongsTo(Country::class, 'country_id', 'id');
     }
 }

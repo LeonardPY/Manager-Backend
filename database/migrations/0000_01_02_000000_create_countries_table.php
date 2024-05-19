@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('country_name');
             $table->string('iso_code');
+            $table->string('currency')->nullable();
         });
     }
 

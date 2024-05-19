@@ -22,6 +22,14 @@ final class OrderRepository extends BaseRepository implements OrderRepositoryInt
 
     public function getOrderById(int $id): object
     {
-        return $this->model->with('orderProducts')->findOrFail($id);
+        return $this->model->with(['user' => function ($query) {
+            return $query->select(['id', 'name', 'email']);
+        }, 'department' => function ($query) {
+            return $query->select(['id', 'name', 'email', 'country_id'])->with('country');
+        }, 'orderProducts' => function ($query) {
+            return $query->with(['product' => function ($query) {
+                return $query->select('id', 'name', 'product_code', 'slug', 'discount_percent')->with('mainPicture');
+            }]);
+        }])->findOrFail($id);
     }
 }

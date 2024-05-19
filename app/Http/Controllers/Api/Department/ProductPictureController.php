@@ -21,7 +21,7 @@ class ProductPictureController extends Controller
     {
     }
 
-    public function destroy(int $id): SuccessResource|Response
+    public function destroy(int $id): SuccessResource|ErrorResource
     {
         /** @var Product $product **/
         /** @var User $user **/
@@ -31,11 +31,11 @@ class ProductPictureController extends Controller
             $this->pictureService->destroyPicture(PicturesPathEnum::PRODUCT->value . '/' . $productPicture->product->id. '/' . $productPicture->path);
             $productPicture->delete();
             return SuccessResource::make([
-                'message' => 'success!'
+                'message' => trans('messages.successfully_deleted'),
             ]);
         }
-        return (new ErrorResource([
-            'message' => 'Forbidden'
-        ]))->response()->setStatusCode(403);
+        return ErrorResource::make([
+            'message' => trans('messages.access_denied'),
+        ])->setStatusCode(403);
     }
 }

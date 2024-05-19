@@ -11,6 +11,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * App\Models\Product
+ *
+ * @property int id
+ * @property int user_id
+ * @property string name
+ * @property string slug
+ * @property float old_price
+ * @property float purchase_price
+ * @property float count
+ * @property int status
+ * @property int category_id
+ * @property string product_code
+ * @property float discount_percent
+ * @property int parent_id
+ */
 class Product extends Model
 {
 
@@ -71,6 +87,6 @@ class Product extends Model
 
     public function haveAccess(int $userId): bool
     {
-        return $this->getAttribute('user_id') === $userId;
+        return $this->user_id === $userId;
     }
 }

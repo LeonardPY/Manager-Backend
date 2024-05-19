@@ -22,8 +22,7 @@ class PaginationResource extends JsonResource
                 'currentPage' => $this['pagination']->currentPage(),
                 'perPage' => $this['pagination']->perPage(),
                 'total' => $this['pagination']->total(),
-            ],
-            'meta' => $this['meta'] ?? [],
+            ]
         ];
     }
 

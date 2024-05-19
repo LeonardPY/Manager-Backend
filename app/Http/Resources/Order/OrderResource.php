@@ -22,6 +22,7 @@ class OrderResource extends JsonResource
             'user_id' =>  $this->resource->user_id,
             'status' => $this->resource->order_status_id,
             'total_price'=> $this->resource->total_price,
+            'currency'=> $this->resource->currency,
             'user_address_id' => $this->resource->user_address_id,
 
             'user' => $this->resource->user,
