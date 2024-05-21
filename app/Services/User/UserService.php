@@ -6,6 +6,7 @@ namespace App\Services\User;
 
 use App\Repositories\UserRepositoryInterface;
 use App\Services\PictureService;
+use App\Enums\PicturesPathEnum;
 
 readonly class UserService
 {
@@ -21,8 +22,7 @@ readonly class UserService
         if (isset($data['logo'])) {
             $lastUser = $this->userRepository->last();
             $nextId = $lastUser ? $lastUser->id + 1 : 1;
-            $data['logo'] = $this->pictureService->uploadPicture($data['logo'], 'users/logo/' . $nextId);
-        }
+            $data['logo'] = $this->pictureService->uploadPicture($data['logo'], PicturesPathEnum::USER_LOGO->value.  '/' . $nextId);        }
         return $data;
     }
 }

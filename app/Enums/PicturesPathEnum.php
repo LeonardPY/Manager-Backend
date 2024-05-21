@@ -8,6 +8,6 @@ enum PicturesPathEnum: string
     case CATEGORY_IMAGE = '/image';
     case CATEGORY_BANNER = '/banner';
     case PRODUCT = '/products';
-    case USER_LOGO = '/user-images';
+    case USER_LOGO = 'users/logo';
 }
 
