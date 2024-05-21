@@ -56,6 +56,12 @@ class StoreUserRequest extends FormRequest
                 'min:6',
                 'confirmed'
             ],
+            'logo' => [
+                'required',
+                'sometimes',
+                'image',
+                'mimes:jpeg,png,jpg,gif|max:2048',
+            ]
         ];
     }
 }

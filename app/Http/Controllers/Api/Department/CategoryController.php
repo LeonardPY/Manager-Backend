@@ -46,7 +46,7 @@ class CategoryController extends Controller
         $data['slug'] = $this->service->generateSlug($data['name']);
         $this->categoryRepository->create($data + ['user_id' => auth()->id()]);
         return SuccessResource::make([
-            'message' => trans('messages.successfully_created'),
+            'message' => trans('message.successfully_created'),
         ]);
     }
 
@@ -65,7 +65,7 @@ class CategoryController extends Controller
         $data = $this->service->uploadUpdateCategoryPictures($validated, $category);
         $category->update($data);
         return SuccessResource::make([
-            'message' => trans('messages.successfully_updated'),
+            'message' => trans('message.successfully_updated'),
             'data' => $category
         ]);
     }
@@ -79,7 +79,7 @@ class CategoryController extends Controller
         $category->delete();
 
         return SuccessResource::make([
-            'message' => trans('messages.successfully_deleted'),
+            'message' => trans('message.successfully_deleted'),
         ]);
 
     }

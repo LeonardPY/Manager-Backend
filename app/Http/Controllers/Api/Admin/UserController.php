@@ -12,13 +12,15 @@ use App\Http\Resources\SuccessResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
+use App\Services\User\UserService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class UserController extends Controller
 {
 
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository
+        private readonly UserRepositoryInterface $userRepository,
+        private readonly UserService             $userService
     )
     {
     }
@@ -38,7 +40,7 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): SuccessResource
     {
-        $data = $request->validated();
+        $data = $this->userService->uploadUserLogo($request->validated());
 
         $user = $this->userRepository->create($data);
 
@@ -46,6 +48,7 @@ class UserController extends Controller
             'data' => $user
         ]);
     }
+
     public function show(User $user): SuccessResource
     {
         return SuccessResource::make([
