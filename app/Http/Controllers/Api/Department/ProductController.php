@@ -36,6 +36,7 @@ class ProductController extends Controller
         $filter = app()->make(ProductFilter::class, ['queryParams' => $request->validated()]);
 
         $products = $this->productRepository->allProduct($filter, auth()->id());
+
         return PaginationResource::make([
             'data' => ProductResource::collection($products),
             'pagination' => $products

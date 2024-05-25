@@ -23,6 +23,7 @@ class BaseProductResource extends JsonResource
             'old_price' => $this->resource->old_price,
             'count' => $this->resource->count,
             'discount_percent' => $this->resource->discount_percent,
+            'discount_price' => $this->resource->discount_price,
             'status' => $this->resource->status->getProductstatus(),
         ];
     }

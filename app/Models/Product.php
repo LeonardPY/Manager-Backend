@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int user_id
  * @property string name
  * @property string slug
+ * @property float price
  * @property float old_price
  * @property float purchase_price
  * @property float count
@@ -34,6 +35,7 @@ class Product extends Model
     use Filterable;
 
     protected $table = 'products';
+    protected $appends =  ['discount_price'];
 
     protected $fillable = [
         'name',
@@ -88,5 +90,14 @@ class Product extends Model
     public function haveAccess(int $userId): bool
     {
         return $this->user_id === $userId;
+    }
+
+    public function getDiscountPriceAttribute(): string
+    {
+        if ($this->discount_percent) {
+            $discountPrice = round((float)($this->price - $this->price * $this->discount_percent / 100), 2);
+            return number_format($discountPrice, 2, '.', '');
+        }
+        return number_format($this->price, 2, '.', '');
     }
 }

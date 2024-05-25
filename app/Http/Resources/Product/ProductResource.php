@@ -13,7 +13,6 @@ class ProductResource extends BaseProductResource
      */
     public function toArray(Request $request): array
     {
-
         return array_merge(parent::toArray($request), [
             'category' => $this->resource->category,
             'mainPicture' => $this->resource->mainPicture,

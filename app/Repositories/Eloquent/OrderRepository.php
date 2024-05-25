@@ -28,7 +28,7 @@ final class OrderRepository extends BaseRepository implements OrderRepositoryInt
             return $query->select(['id', 'name', 'email', 'country_id'])->with('country');
         }, 'orderProducts' => function ($query) {
             return $query->with(['product' => function ($query) {
-                return $query->select('id', 'name', 'product_code', 'slug', 'discount_percent')->with('mainPicture');
+                return $query->select('id', 'name', 'price', 'product_code', 'slug', 'discount_percent')->with('mainPicture');
             }]);
         }])->findOrFail($id);
     }
