@@ -45,7 +45,7 @@ class OrderProductController extends Controller
         }
         $order = $this->orderRepository->updateOrCreate(['user_id' => auth()->id(), 'department_id' => $validated['department_id'], 'status' => OrderStatus::IN_CART->value], []);
 
-        $this->orderProductRepository->updateOrcreate(['order_id' => $order->id, 'product_id' => $validated['product_id']], $validated + ['price' => $product->price]);
+        $this->orderProductRepository->updateOrcreate(['order_id' => $order->id, 'product_id' => $validated['product_id']], $validated + ['price' => $product->discount_price]);
 
         return SuccessResource::make([
             'message' => trans('message.successfully_created'),
