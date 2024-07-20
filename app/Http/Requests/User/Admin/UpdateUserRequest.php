@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\User\Admin;
 
+use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -40,14 +42,13 @@ class UpdateUserRequest extends FormRequest
             'user_role_id' => [
                 'required',
                 'sometimes',
-                'sometimes',
                 'exists:user_roles,id'
             ],
             'email' => [
                 'required',
                 'sometimes',
                 'email',
-                'unique:users,email'
+                Rule::unique(User::class)->ignore($this->route('user.id')),
             ],
             'password' => [
                 'required',
