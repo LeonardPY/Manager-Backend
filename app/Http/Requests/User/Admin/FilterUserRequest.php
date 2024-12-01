@@ -30,7 +30,9 @@ class FilterUserRequest extends FormRequest
             'last_name' => [
                 'nullable',
                 'string',
-            ]
+            ],
+            'page' => 'nullable|integer:min:1',
+            'limit' => 'nullable|integer:min:1',
         ];
     }
 }

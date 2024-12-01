@@ -11,46 +11,41 @@ use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use Exception;
-use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Hashing\HashManager;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
-    )
-    {
+        private readonly HashManager $hashManager
+    ) {
     }
 
     /**
-     * Get a JWT via given credentials.
-     *
      * @param LoginRequest $request
      * @return SuccessResource|ErrorResource
+     * @throws ValidationException
      */
     public function login(LoginRequest $request): SuccessResource|ErrorResource
     {
-        $request->validated();
-        $token = Auth::attempt($request->only(['email', 'password']));
-
-        if (!$token) {
+        $request = $request->validated();;
+        $user = $this->userRepository->findByEmail($request['email']);
+        if (!$user || !$this->hashManager->check($request['password'], $user->password)) {
             return ErrorResource::make([
                 'message' => trans('auth.failed')
-            ]);
+            ])->setStatusCode(422);
         }
-        /**
-         * @var User $user
-         */
-        $user = auth()->user();
+        $token = $user->createToken('user')->plainTextToken;
 
         return SuccessResource::make([
             'data' => [
-                'user' => UserResource::make($this->userRepository->findById($user->getAttribute('id'))),
+                'user' => UserResource::make($user),
                 'auth' => [
                     'token' => $token
                 ]
             ]
-        ]);
+        ])->setStatusCode(200);
     }
 
     public function user(): SuccessResource

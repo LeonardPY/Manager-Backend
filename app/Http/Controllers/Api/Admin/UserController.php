@@ -8,6 +8,7 @@ use App\Http\Filters\UserFilter;
 use App\Http\Requests\User\Admin\FilterUserRequest;
 use App\Http\Requests\User\Admin\StoreUserRequest;
 use App\Http\Requests\User\Admin\UpdateUserRequest;
+use App\Http\Resources\PaginationResource;
 use App\Http\Resources\SuccessResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
@@ -28,13 +29,18 @@ class UserController extends Controller
     /**
      * @throws BindingResolutionException
      */
-    public function index(FilterUserRequest $request): SuccessResource
+    public function index(FilterUserRequest $request): PaginationResource
     {
-        $filter = app()->make(UserFilter::class, ['queryParams' => array_filter($request->validated())]);
+        $filter = app()->make(UserFilter::class, [
+            'queryParams' => array_filter($request->validated())
+        ]);
+
         $users = $this->userRepository->getUsers($filter);
-        return SuccessResource::make([
+
+        return PaginationResource::make([
+            'message' => trans('message.success'),
             'data' => UserResource::collection($users),
-            'message' => trans('message.success')
+            'pagination' => $users
         ]);
     }
 
@@ -52,8 +58,8 @@ class UserController extends Controller
     public function show(User $user): SuccessResource
     {
         return SuccessResource::make([
+            'message' => trans('message.success'),
             'data' => UserResource::make($user),
-            'message' => trans('message.success')
         ]);
     }
 
@@ -65,7 +71,7 @@ class UserController extends Controller
 
         return SuccessResource::make([
             'message' => trans('message.successfully_updated'),
-            'data' => $user
+            'data' => UserResource::make($user),
         ]);
     }
 

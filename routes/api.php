@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Order\OrderProductController;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\UserAddressController;
+use App\Http\Controllers\VideoUploadController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -24,20 +25,20 @@ Route::middleware('throttle:10,1')->group(function () {
     Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 });
 
-Route::middleware(['auth:api', 'verified'])->prefix('auth')->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user', [AuthController::class, 'user']);
 });
 
 //api/admin
-Route::middleware(['auth:api','verified','admin',])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum','verified','admin',])->prefix('admin')->group(function () {
     Route::apiResource('users', UserController::class);
 });
 
 
 //api/department
-Route::middleware(['auth:api','verified','department'])->prefix('department')->group(function () {
+Route::middleware(['auth:sanctum','verified','department'])->prefix('department')->group(function () {
     //Create Category
     Route::apiResource('/categories', CategoryController::class, ['store', 'index', 'show', 'destroy']);
     Route::post('/categories/{category}', [CategoryController::class, 'update']);
@@ -58,10 +59,12 @@ Route::middleware(['auth:api','verified','department'])->prefix('department')->g
 });
 
 //user
-Route::middleware(['auth:api', 'verified'])->prefix('user')->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {
     Route::apiResource('userAddress', UserAddressController::class);
     //Favorite
     Route::apiResource('favorite', FavoriteController::class, ['index', 'store', 'destroy']);
     Route::post('save-favorites', [FavoriteController::class, 'saveFavorites']);
 });
+
+Route::post('/video', [VideoUploadController::class, 'store']);
 

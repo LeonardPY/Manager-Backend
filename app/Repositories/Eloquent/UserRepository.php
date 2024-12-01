@@ -17,7 +17,9 @@ final class UserRepository extends BaseRepository implements UserRepositoryInter
     // admin
     public function getUsers(UserFilter $filter)
     {
-        return $this->model->with('country')->whereNot('status', UserStatusEnum::DELETED->value)->filter($filter)->paginate($filter->PER_PAGE);
+        return $this->model->with('country')
+            ->whereNot('status', UserStatusEnum::DELETED->value)
+            ->filter($filter)->paginate($filter->PER_PAGE, ['*'], 'users_page', $filter->PAGE);
     }
     public function findByEmail(string $email): mixed
     {

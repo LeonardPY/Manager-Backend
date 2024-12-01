@@ -22,17 +22,16 @@ class SuccessResource extends JsonResource
         return $this;
     }
 
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
+        $message = data_get($this->resource, 'message', '');
+        $data = data_get($this->resource, 'data', []);
+
         return [
             'success' => true,
-            'message' => $this['message'] ?? '',
-            'data' => $this['data'] ?? [],
+            'message' => $message,
+            'data' => $data,
         ];
     }
 }

@@ -9,26 +9,24 @@ use App\Http\Resources\SuccessResource;
 use App\Models\Product;
 use App\Models\User;
 use App\Repositories\Eloquent\ProductPictureRepository;
-use App\Services\PictureService;
-use Symfony\Component\HttpFoundation\Response;
+use App\Services\FilesystemService;
 
 class ProductPictureController extends Controller
 {
     public function __construct(
-        private readonly ProductPictureRepository     $productPictureRepository,
-        private readonly PictureService               $pictureService
-    )
-    {
+        private readonly ProductPictureRepository $productPictureRepository,
+        private readonly FilesystemService        $pictureService
+    ) {
     }
 
     public function destroy(int $id): SuccessResource|ErrorResource
     {
-        /** @var Product $product **/
-        /** @var User $user **/
+        /** @var Product $product * */
+        /** @var User $user * */
         $productPicture = $this->productPictureRepository->findOrFail($id);
         $user = auth()->user();
-        if($productPicture->product->haveAccess(auth()->id()) || $user->isAdmin()) {
-            $this->pictureService->destroyPicture(PicturesPathEnum::PRODUCT->value . '/' . $productPicture->product->id. '/' . $productPicture->path);
+        if ($productPicture->product->haveAccess(auth()->id()) || $user->isAdmin()) {
+            $this->pictureService->destroyPicture(PicturesPathEnum::PRODUCT->value . '/' . $productPicture->product->id . '/' . $productPicture->path);
             $productPicture->delete();
             return SuccessResource::make([
                 'message' => trans('messages.successfully_deleted'),

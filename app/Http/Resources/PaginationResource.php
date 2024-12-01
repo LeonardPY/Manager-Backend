@@ -7,21 +7,20 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PaginationResource extends JsonResource
 {
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
+    /** @return array<string,mixed> */
     public function toArray(Request $request): array
     {
+        $pagination = data_get($this->resource, 'pagination', []);
+        $message = data_get($this->resource, 'message', '');
+        $data = data_get($this->resource, 'data', []);
         return [
             'success' => true,
-            'message' => $this['message'] ?? '',
-            'data' => $this['data'] ?? [],
+            'message' => $message,
+            'data' => $data,
             'pagination' => [
-                'currentPage' => $this['pagination']->currentPage(),
-                'perPage' => $this['pagination']->perPage(),
-                'total' => $this['pagination']->total(),
+                'currentPage' => $pagination->currentPage() ?? null,
+                'perPage' => $pagination->perPage() ?? null,
+                'total' => $pagination->total() ?? null,
             ]
         ];
     }

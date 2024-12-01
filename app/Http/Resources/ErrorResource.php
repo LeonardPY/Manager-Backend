@@ -21,9 +21,10 @@ class ErrorResource extends JsonResource
     {
         self::withoutWrapping();
 
+        $message = data_get($this->resource, 'message', '');
         return [
             'success' => false,
-            'message' => $this['message'] ?? '',
+            'message' => $message,
         ];
     }
 

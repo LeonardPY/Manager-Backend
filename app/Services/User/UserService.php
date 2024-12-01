@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\User;
 
 use App\Repositories\UserRepositoryInterface;
+use App\Services\FilesystemService;
 use App\Services\PictureService;
 use App\Enums\PicturesPathEnum;
 
@@ -12,7 +13,7 @@ readonly class UserService
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
-        private PictureService          $pictureService
+        private FilesystemService       $pictureService
     )
     {
     }
