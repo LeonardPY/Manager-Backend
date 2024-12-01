@@ -2,24 +2,23 @@
 
 namespace App\Http\Filters;
 
+use App\Http\Filters\FilterTraits\FilterHasPagination;
 use Illuminate\Database\Eloquent\Builder;
 
 class UserFilter extends AbstractFilters
 {
-
+    use FilterHasPagination;
     public const NAME = 'name';
     public const LAST_NAME = 'last_name';
-    public const PER_PAGE = 'per_page';
-
-    public int $PER_PAGE = 25;
-
 
     protected function getCallbacks(): array
     {
         return [
             self::NAME        => [$this, 'name'],
             self::LAST_NAME   => [$this, 'last_name'],
-            self::PER_PAGE    => [$this, 'perPagePagination'],
+
+            self::PAGE        => [$this, 'page'],
+            self::PER_PAGE    => [$this, 'limit'],
         ];
     }
 
@@ -31,9 +30,4 @@ class UserFilter extends AbstractFilters
     {
         $builder->where('name_am', 'like', "%$value%");
     }
-    public function perPagePagination(Builder $builder, int $value): void
-    {
-        $this->PER_PAGE = $value;
-    }
-
 }
