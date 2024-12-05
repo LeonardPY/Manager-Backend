@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Exceptions\AccessDeniedException;
+use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\OrderFilter;
 use App\Http\Requests\Order\FilterOrderRequest;
@@ -25,8 +26,7 @@ class OrderController extends Controller
         private readonly OrderService                           $orderService,
         private readonly OrderRepositoryInterface               $orderRepository,
         private readonly OrderProductRepositoryInterface        $orderProductRepository,
-    )
-    {
+    ) {
     }
 
     /**
@@ -83,11 +83,12 @@ class OrderController extends Controller
 
     }
 
+    /** @throws ApiErrorException */
     public function show(Order $order): SuccessResource|ErrorResource
     {
         $order = $this->orderRepository->getOrderById($order->id);
-
-        if (!Gate::forUser(auth()->user())->allows('authorize', $order)) {
+        $user = authUser();
+        if (!Gate::forUser($user)->allows('authorize', $order)) {
             return ErrorResource::make([
                 'message' => trans('message.access_denied')
             ])->setStatusCode(403);
@@ -103,13 +104,12 @@ class OrderController extends Controller
         ])->setStatusCode(200);
     }
 
-    /**
-     * @throws AccessDeniedException
-     */
+    /** @throws AccessDeniedException|ApiErrorException */
     public function destroy(int $id): SuccessResource|ErrorResource
     {
+        $user = authUser();
         $order = $this->orderRepository->findOrFail($id);
-        $this->orderService->haveProcessAccess($order, auth()->id());
+        $this->orderService->haveProcessAccess($order, $user->id);
 
         $this->orderProductRepository->clearOrder($order->id);
 

@@ -22,19 +22,15 @@ class UserController extends Controller
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
         private readonly UserService             $userService
-    )
-    {
+    ) {
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
+    /** @throws BindingResolutionException */
     public function index(FilterUserRequest $request): PaginationResource
     {
         $filter = app()->make(UserFilter::class, [
             'queryParams' => array_filter($request->validated())
         ]);
-
         $users = $this->userRepository->getUsers($filter);
 
         return PaginationResource::make([

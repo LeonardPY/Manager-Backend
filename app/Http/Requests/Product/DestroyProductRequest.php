@@ -2,25 +2,20 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Exceptions\ApiErrorException;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DestroyProductRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    /** @throws ApiErrorException */
     public function authorize(): bool
     {
-        $user = auth()->user();
+        $user = authUser();
         return $this->product->user_id === $user->id || $user->isAdmin();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array|string>
-     */
+    /**  @return array<string, ValidationRule|array|string> */
     public function rules(): array
     {
         return [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Favorite\SaveFavoritesRequest;
 use App\Http\Requests\User\Favorite\StoreFavoriteRequest;
@@ -43,9 +44,11 @@ final class FavoriteController extends Controller
         ]);
     }
 
+    /** @throws ApiErrorException */
     public function destroy(Favorite $favorite): ErrorResource|SuccessResource
     {
-        if (Gate::forUser(auth()->user())->allows('authorize', $favorite)) {
+        $user = authUser();
+        if (Gate::forUser($user)->allows('authorize', $favorite)) {
             $favorite->delete();
 
             return new SuccessResource([
@@ -57,12 +60,17 @@ final class FavoriteController extends Controller
         ]);
     }
 
+    /** @throws ApiErrorException */
     public function saveFavorites(SaveFavoritesRequest $request): SuccessResource
     {
+        $user = authUser();
         $favorites = $this->favoriteService->makeStoreData($request->validated());
 
         foreach ($favorites as $favorite) {
-            $this->favoriteRepository->updateOrCreate(['user_id' => auth()->id(), 'product_id' => $favorite['product_id']], []);
+            $this->favoriteRepository->updateOrCreate([
+                'user_id' => $user->id,
+                'product_id' => $favorite['product_id']
+            ], []);
         }
 
         return SuccessResource::make([

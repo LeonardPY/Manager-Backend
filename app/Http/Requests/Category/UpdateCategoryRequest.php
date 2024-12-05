@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Category;
 
+use App\Exceptions\ApiErrorException;
 use App\Rules\DifferentCategoryIdRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -10,10 +11,11 @@ class UpdateCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     * @throws ApiErrorException
      */
     public function authorize(): bool
     {
-        $user = auth()->user();
+        $user = authUser();
         return $this->category->user_id === $user->id || $user->isAdmin();
     }
 

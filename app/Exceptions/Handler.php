@@ -9,9 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Throwable;
 
 
 class Handler extends ExceptionHandler
@@ -20,13 +18,6 @@ class Handler extends ExceptionHandler
     {
         parent::__construct($container);
     }
-
-    /** @var array<int, string> */
-    protected $dontFlash = [
-        'current_password',
-        'password',
-        'password_confirmation',
-    ];
 
     public function register(): void
     {
