@@ -10,9 +10,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
-
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $last_name
+ * @property string email
+ * @property string password
+ * @property int user_role_id
+ * @property int country_id
+ * @property int status
+ * @property string logo
+*/
 class User extends Authenticatable implements  MustVerifyEmail
 {
     use HasFactory, Notifiable, Filterable, HasApiTokens;
@@ -50,9 +59,10 @@ class User extends Authenticatable implements  MustVerifyEmail
     /** @return bool */
     public function isAdmin(): bool
     {
-        return $this->getAttribute('user_role_id') === UserRoleEnum::ADMIN;
+        return $this->user_role_id == UserRoleEnum::ADMIN;
     }
 
+    /** @return BelongsTo */
     public function country(): BelongsTo
     {
         return $this->BelongsTo(Country::class, 'country_id', 'id');

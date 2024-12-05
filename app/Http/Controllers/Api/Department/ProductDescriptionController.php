@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Department;
 
+use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductDescription\StoreProductDescriptionRequest;
 use App\Http\Requests\ProductDescription\UpdateProductDescriptionRequest;
@@ -26,6 +27,7 @@ class ProductDescriptionController extends Controller
     }
 
 
+    /** @throws ApiErrorException */
     public function store(
         StoreProductDescriptionRequest $productDescriptionRequest,
         StoreProductPictureRequest     $productPictureRequest,
@@ -37,8 +39,8 @@ class ProductDescriptionController extends Controller
         $productDescriptionValidated = $productDescriptionRequest->validated();
         $productPictureValidated = $productPictureRequest->validated();
 
-        $user = auth()->user();
-        if ($product->haveAccess(auth()->id()) || $user->isAdmin()) {
+        $user = authUser();
+        if ($product->haveAccess($user->id) || $user->isAdmin()) {
             $productPictureValidatedData = $this->productService->uploadPictures($productPictureValidated, $product->id);
             $this->descriptionRepository->updateOrCreate(['product_id' => $product->id], $productDescriptionValidated);
             $this->productPictureRepository->insert($productPictureValidatedData);
@@ -52,14 +54,15 @@ class ProductDescriptionController extends Controller
     }
 
 
+    /** @throws ApiErrorException */
     public function update(UpdateProductDescriptionRequest $productDescriptionRequest, Product $product): SuccessResource|ErrorResource
     {
         /** @var Product $product **/
         /** @var User $user **/
         $productDescriptionValidated = $productDescriptionRequest->validated();
-        $user = auth()->user();
+        $user = authUser();
 
-        if ($product->haveAccess(auth()->id()) || $user->isAdmin()) {
+        if ($product->haveAccess($user->id) || $user->isAdmin()) {
             $this->descriptionRepository->updateOrCreate(['product_id' => $product->id], $productDescriptionValidated);
             return SuccessResource::make([
                 'message' => trans('messages.successfully_updated'),

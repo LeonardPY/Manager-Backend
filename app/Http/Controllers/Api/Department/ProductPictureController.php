@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Department;
 
 use App\Enums\PicturesPathEnum;
+use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ErrorResource;
 use App\Http\Resources\SuccessResource;
@@ -19,12 +20,13 @@ class ProductPictureController extends Controller
     ) {
     }
 
+    /** @throws ApiErrorException */
     public function destroy(int $id): SuccessResource|ErrorResource
     {
         /** @var Product $product * */
         /** @var User $user * */
         $productPicture = $this->productPictureRepository->findOrFail($id);
-        $user = auth()->user();
+        $user = authUser();
         if ($productPicture->product->haveAccess(auth()->id()) || $user->isAdmin()) {
             $this->pictureService->destroyPicture(PicturesPathEnum::PRODUCT->value . '/' . $productPicture->product->id . '/' . $productPicture->path);
             $productPicture->delete();
