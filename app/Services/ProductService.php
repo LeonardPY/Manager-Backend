@@ -15,11 +15,10 @@ readonly class ProductService
 {
 
     public function __construct(
-        private ProductRepositoryInterface            $productRepository,
-        private PictureService                        $pictureService,
-        private ProductMainPictureRepositoryInterface $productMainPictureRepository
-    )
-    {
+        private ProductRepositoryInterface $productRepository,
+        private ProductMainPictureRepositoryInterface $productMainPictureRepository,
+        private FilesystemService $pictureService
+    ) {
     }
 
     public function setProductCode(array $data): array

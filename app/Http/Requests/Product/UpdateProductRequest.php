@@ -4,6 +4,7 @@ namespace App\Http\Requests\Product;
 
 use App\Enums\ProductStatusEnum;
 use App\Exceptions\ApiErrorException;
+use App\Models\Product;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
@@ -17,7 +18,9 @@ class UpdateProductRequest extends FormRequest
     public function authorize(): bool
     {
         $user = authUser();
-        return $this->product->user_id === $user->id || $user->isAdmin();
+        /** @var Product $product */
+        $product = $this->product ?? throw new ApiErrorException(trans('message.not_found'), 404);
+        return $product->user_id === $user->id || $user->isAdmin();
     }
 
     /**

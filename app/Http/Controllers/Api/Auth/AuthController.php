@@ -9,7 +9,6 @@ use App\Http\Requests\Auth\LogoutRequest;
 use App\Http\Resources\ErrorResource;
 use App\Http\Resources\SuccessResource;
 use App\Http\Resources\User\UserResource;
-use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Hashing\HashManager;
 use Illuminate\Validation\ValidationException;
@@ -29,14 +28,15 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): SuccessResource|ErrorResource
     {
-        $request = $request->validated();;
-        $user = $this->userRepository->findByEmail($request['email']);
-        if (!$user || !$this->hashManager->check($request['password'], $user->password)) {
+        $validated = $request->validated();;
+        $user = $this->userRepository->findByEmail($validated['email']);
+        if (!$user || !$this->hashManager->check($validated['password'], $user->password)) {
             return ErrorResource::make([
                 'message' => trans('auth.failed')
             ])->setStatusCode(422);
         }
-        $token = $user->createToken('user')->plainTextToken;
+
+        $token = $user->createToken('user' . $request->ip())->plainTextToken;
 
         return SuccessResource::make([
             'data' => [
@@ -54,9 +54,7 @@ class AuthController extends Controller
         $user = authUser();
         return SuccessResource::make([
             'data' => [
-                'user' => UserResource::make(
-                    $this->userRepository->findById($user->getAttribute('id'))
-                ),
+                'user' => UserResource::make($user)
             ]
         ]);
     }
@@ -65,7 +63,7 @@ class AuthController extends Controller
     public function logout(LogoutRequest $request): SuccessResource|ErrorResource
     {
         $user = authUser();
-        $user->tokens()->delete();
+        $user->tokens()->where('name', 'user' . $request->ip())->delete();
         return SuccessResource::make([
             'message' => trans('messages.logged_out')
         ]);

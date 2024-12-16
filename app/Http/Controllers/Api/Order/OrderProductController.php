@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Order;
 
 use App\Enums\OrderStatus;
 use App\Exceptions\AccessDeniedException;
+use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderProduct\StoreOrderProductRequest;
 use App\Http\Requests\OrderProduct\UpdateOrderProductRequest;
@@ -18,14 +19,14 @@ class OrderProductController extends Controller
 {
 
     public function __construct(
-        private readonly OrderRepositoryInterface        $orderRepository,
+        private readonly OrderRepositoryInterface $orderRepository,
         private readonly OrderProductRepositoryInterface $orderProductRepository,
-        private readonly ProductRepositoryInterface      $productRepository,
-        private readonly OrderService                    $orderService
-    )
-    {
+        private readonly ProductRepositoryInterface $productRepository,
+        private readonly OrderService $orderService
+    ) {
     }
 
+    /** @throws ApiErrorException */
     public function store(StoreOrderProductRequest $cartProductRequest): SuccessResource|ErrorResource
     {
         $validated = $cartProductRequest->validated();
@@ -43,9 +44,16 @@ class OrderProductController extends Controller
                 'message' => trans('message.product_is_out_of_stock'),
             ])->setStatusCode(423);
         }
-        $order = $this->orderRepository->updateOrCreate(['user_id' => auth()->id(), 'department_id' => $validated['department_id'], 'status' => OrderStatus::IN_CART->value], []);
+        $order = $this->orderRepository->updateOrCreate([
+            'user_id' => authUser()->id,
+            'department_id' => $validated['department_id'],
+            'status' => OrderStatus::IN_CART->value], []
+        );
 
-        $this->orderProductRepository->updateOrcreate(['order_id' => $order->id, 'product_id' => $validated['product_id']], $validated + ['price' => $product->discount_price]);
+        $this->orderProductRepository->updateOrcreate([
+            'order_id' => $order->id,
+            'product_id' => $validated['product_id']
+        ], $validated + ['price' => $product->discount_price]);
 
         return SuccessResource::make([
             'message' => trans('message.successfully_created'),
@@ -53,14 +61,12 @@ class OrderProductController extends Controller
         ]);
     }
 
-    /**
-     * @throws AccessDeniedException
-     */
+    /** @throws AccessDeniedException|ApiErrorException */
     public function update(UpdateOrderProductRequest $request, int $id): SuccessResource|ErrorResource
     {
         $data = $request->validated();
         $orderProduct = $this->orderProductRepository->getOrderProductWithOrder($id);
-        $this->orderService->haveProcessAccess($orderProduct->order, auth()->id());
+        $this->orderService->haveProcessAccess($orderProduct->order, authUser()->id);
 
         $product = $this->productRepository->findOrFail($orderProduct->product_id);
 
@@ -76,13 +82,11 @@ class OrderProductController extends Controller
         ]);
     }
 
-    /**
-     * @throws AccessDeniedException
-     */
+    /** @throws AccessDeniedException|ApiErrorException */
     public function destroy(int $id): SuccessResource
     {
         $orderProduct = $this->orderProductRepository->getOrderProductWithOrder($id);
-        $this->orderService->haveProcessAccess($orderProduct->order, auth()->id());
+        $this->orderService->haveProcessAccess($orderProduct->order, authUser()->id);
         $this->orderProductRepository->delete($orderProduct->id);
 
         return new SuccessResource([

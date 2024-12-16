@@ -5,20 +5,23 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Exceptions\AccessDeniedException;
+use App\Models\Order;
 use App\Repositories\UserAddressRepositoryInterface;
 use App\Services\ExchangeRate\ExchangeRateService;
 readonly class OrderService
 {
     public function __construct(
         private UserAddressRepositoryInterface $userAddressRepository,
-        private ExchangeRateService            $exchangeRateService
-    )
-    {
+        private ExchangeRateService $exchangeRateService
+    ) {
     }
 
-    public function calculate(object $order): array
+    public function calculate(Order $order): array
     {
-        $curse = $this->exchangeRateService->getExchangeRate(from: $order->department->country->currency, to: $order->currency);
+        $curse = $this->exchangeRateService->getExchangeRate(
+            from: $order->department->country->currency,
+            to: $order->currency
+        );
         $amount = 0;
         $shippingCost = 0.00;
         $insuranceCost = 0.00;
@@ -45,7 +48,7 @@ readonly class OrderService
     /**
      * @throws AccessDeniedException
      */
-    public function haveProcessAccess(object $order, int $userId): void
+    public function haveProcessAccess(Order $order, int $userId): void
     {
         if (!$order->haveProcessAccess($userId)) {
             throw new AccessDeniedException();

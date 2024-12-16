@@ -30,8 +30,8 @@ class OrderResource extends JsonResource
             'shipping_data' => $this->resource->shipping_data,
             'order_products' => $this->resource->orderProducts,
 
-            'created_at'     => $this->resource->created_at,
-            'updated_at'     => $this->resource->updated_at
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at
         ];
     }
 }

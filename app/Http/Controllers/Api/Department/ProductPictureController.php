@@ -7,8 +7,7 @@ use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ErrorResource;
 use App\Http\Resources\SuccessResource;
-use App\Models\Product;
-use App\Models\User;
+use App\Models\ProductPicture;
 use App\Repositories\Eloquent\ProductPictureRepository;
 use App\Services\FilesystemService;
 
@@ -23,19 +22,20 @@ class ProductPictureController extends Controller
     /** @throws ApiErrorException */
     public function destroy(int $id): SuccessResource|ErrorResource
     {
-        /** @var Product $product * */
-        /** @var User $user * */
+        /** @var ProductPicture $productPicture */
         $productPicture = $this->productPictureRepository->findOrFail($id);
         $user = authUser();
-        if ($productPicture->product->haveAccess(auth()->id()) || $user->isAdmin()) {
-            $this->pictureService->destroyPicture(PicturesPathEnum::PRODUCT->value . '/' . $productPicture->product->id . '/' . $productPicture->path);
-            $productPicture->delete();
+        if ($productPicture->product->haveAccess($user->id) || $user->isAdmin()) {
+            $this->pictureService->destroyPicture(
+                PicturesPathEnum::PRODUCT->value . '/' . $productPicture->product->id . '/' . $productPicture->path
+            );
+            $this->productPictureRepository->delete($productPicture->id);
             return SuccessResource::make([
-                'message' => trans('messages.successfully_deleted'),
+                'message' => trans('message.successfully_deleted'),
             ]);
         }
         return ErrorResource::make([
-            'message' => trans('messages.access_denied'),
+            'message' => trans('message.access_denied'),
         ])->setStatusCode(403);
     }
 }
