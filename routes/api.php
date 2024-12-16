@@ -14,9 +14,6 @@ use App\Http\Controllers\Api\User\UserAddressController;
 use App\Http\Controllers\VideoUploadController;
 use Illuminate\Support\Facades\Route;
 
-
-
-
 //api/auth
 Route::middleware('throttle:10,1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);

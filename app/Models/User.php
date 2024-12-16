@@ -7,6 +7,7 @@ use App\Models\Traits\Filterable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -15,12 +16,14 @@ use Laravel\Sanctum\HasApiTokens;
  * @property int $id
  * @property string $name
  * @property string $last_name
- * @property string email
- * @property string password
- * @property int user_role_id
- * @property int country_id
- * @property int status
- * @property string logo
+ * @property string $email
+ * @property string $password
+ * @property int $user_role_id
+ * @property int $country_id
+ * @property int $status
+ * @property string $logo
+ * @property Category $category
+ * @property Country $country
 */
 class User extends Authenticatable implements  MustVerifyEmail
 {
@@ -66,5 +69,11 @@ class User extends Authenticatable implements  MustVerifyEmail
     public function country(): BelongsTo
     {
         return $this->BelongsTo(Country::class, 'country_id', 'id');
+    }
+
+    /** @return HasMany */
+    public function category(): HasMany
+    {
+        return $this->hasMany(Category::class, 'user_id', 'id');
     }
 }

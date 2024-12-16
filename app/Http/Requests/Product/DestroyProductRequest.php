@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Product;
 
 use App\Exceptions\ApiErrorException;
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DestroyProductRequest extends FormRequest
@@ -12,14 +12,8 @@ class DestroyProductRequest extends FormRequest
     public function authorize(): bool
     {
         $user = authUser();
-        return $this->product->user_id === $user->id || $user->isAdmin();
-    }
-
-    /**  @return array<string, ValidationRule|array|string> */
-    public function rules(): array
-    {
-        return [
-            //
-        ];
+        /** @var Product $product */
+        $product = $this->product ?? throw new ApiErrorException(trans('message.not_found'), 404);
+        return $product->user_id === $user->id || $user->isAdmin();
     }
 }

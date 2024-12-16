@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Department;
 
+use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\CategoryFilter;
 use App\Http\Requests\Category\CategoryFilterRequest;
@@ -22,29 +23,27 @@ class CategoryController extends Controller
     public function __construct(
         private readonly CategoryRepositoryInterface $categoryRepository,
         private readonly CategoryService             $service
-    )
-    {
+    ) {
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
+    /** @throws BindingResolutionException|ApiErrorException */
     public function index(CategoryFilterRequest $request): PaginationResource
     {
         $filter = app()->make(CategoryFilter::class, ['queryParams' => $request->validated()]);
-        $categories = $this->categoryRepository->allCategories($filter,  auth()->id());
+        $categories = $this->categoryRepository->allCategories($filter,  authUser()->id);
         return PaginationResource::make([
             'data' => CategoryResource::collection($categories),
             'pagination' => $categories
         ]);
     }
 
+    /** @throws ApiErrorException */
     public function store(StoreCategoryRequest $request): SuccessResource
     {
         $validated = $request->validated();
         $data = $this->service->uploadStoreCategoryPictures($validated);
         $data['slug'] = $this->service->generateSlug($data['name']);
-        $this->categoryRepository->create($data + ['user_id' => auth()->id()]);
+        $this->categoryRepository->create($data + ['user_id' => authUser()->id]);
         return SuccessResource::make([
             'message' => trans('message.successfully_created'),
         ]);
@@ -53,9 +52,8 @@ class CategoryController extends Controller
     public function show(ShowCategoryRequest $request, Category $category): SuccessResource
     {
         $request->validated();
-        $category = $this->categoryRepository->findOrFail($category->getAttribute('id'));
         return SuccessResource::make([
-            'data' => $category,
+            'data' => CategoryResource::make($category),
         ]);
     }
 
@@ -63,21 +61,18 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
         $data = $this->service->uploadUpdateCategoryPictures($validated, $category);
-        $category->update($data);
+        $this->categoryRepository->update($category->id, $data);
         return SuccessResource::make([
             'message' => trans('message.successfully_updated'),
-            'data' => $category
+            'data' => CategoryResource::make($category)
         ]);
     }
 
     public function destroy(DestroyCategoryRequest $request, Category $category): SuccessResource
     {
         $request->validated();
-
         $this->service->destroyCategoryPictures($category);
-
-        $category->delete();
-
+        $this->categoryRepository->delete($category->id);
         return SuccessResource::make([
             'message' => trans('message.successfully_deleted'),
         ]);

@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Http\Filters\CategoryFilter;
 use App\Models\Category;
 use App\Repositories\CategoryRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 final class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
@@ -13,7 +14,7 @@ final class CategoryRepository extends BaseRepository implements CategoryReposit
         parent::__construct($model);
     }
 
-    public function allCategories(CategoryFilter $filter, int $userId)
+    public function allCategories(CategoryFilter $filter, int $userId): LengthAwarePaginator
     {
         return $this->model->with('subCategory.subCategory')
             ->where([
@@ -22,9 +23,8 @@ final class CategoryRepository extends BaseRepository implements CategoryReposit
             ])
             ->filter($filter)->paginate($filter->PER_PAGE);
     }
-    public function slugExists(string $slug): object|bool
+    public function slugExists(string $slug): bool
     {
         return $this->model->where('slug', $slug)->exists();
     }
-
 }

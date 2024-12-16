@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\Department;
 
 use App\Enums\ProductStatusEnum;
+use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\ProductFilter;
+use App\Http\Requests\Product\DestroyProductRequest;
 use App\Http\Requests\Product\ProductFilterRequest;
 use App\Http\Requests\Product\ShowProductRequest;
 use App\Http\Requests\Product\StoreProductRequest;
@@ -23,19 +25,15 @@ class ProductController extends Controller
 {
     public function __construct(
         private readonly ProductRepositoryInterface $productRepository,
-        private readonly ProductService             $productService
-    )
-    {
+        private readonly ProductService $productService
+    ) {
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
+    /** @throws BindingResolutionException|ApiErrorException */
     public function index(ProductFilterRequest $request): PaginationResource
     {
         $filter = app()->make(ProductFilter::class, ['queryParams' => $request->validated()]);
-
-        $products = $this->productRepository->allProduct($filter, auth()->id());
+        $products = $this->productRepository->allProduct($filter, authUser()->id);
 
         return PaginationResource::make([
             'data' => ProductResource::collection($products),
@@ -44,50 +42,49 @@ class ProductController extends Controller
 
     }
 
+    /** @throws ApiErrorException */
     public function store(StoreProductRequest $request): SuccessResource
     {
         $data = $request->validated();
-
         $data = $this->productService->setProductCode($data);
         $data['slug'] = $this->productService->generateSlug($data['name']);
-        $product = $this->productRepository->create(Arr::except($data + ['user_id' => auth()->id()], ['picture']));
+        $data['user_id'] = authUser()->id;
+        $product = $this->productRepository->create($data);
         $this->productService->mainUploadPicture($data, $product);
-
         return SuccessResource::make([
-            'message' => trans('messages.successfully_created'),
+            'message' => trans('message.successfully_created'),
         ]);
     }
 
-    public function show(ShowProductRequest$request, Product $product): SuccessResource
+    public function show(ShowProductRequest $request, Product $product): SuccessResource
     {
         $request->validated();
-        $product = $this->productRepository->findProductById($product->getAttribute('id'));
-
+        $product = $this->productRepository->findProductById($product->id);
         return SuccessResource::make([
             'data' => OneProductResource::make($product),
         ]);
     }
 
-
     public function update(UpdateProductRequest $request, Product $product): SuccessResource
     {
         $data = $request->validated();
-
+        $product = $this->productRepository->findProductById($product->id);
         $this->productService->mainUploadPicture($data, $product);
-        $this->productRepository->update($product->getAttribute('id'), Arr::except($data, ['picture']));
-
+        $this->productRepository->update($product->id, $data);
         return SuccessResource::make([
-            'message' => trans('messages.successfully_updated'),
+            'message' => trans('message.successfully_updated'),
         ]);
     }
 
-
-    public function destroy(Product $product): SuccessResource
+    public function destroy(DestroyProductRequest $request, Product $product): SuccessResource
     {
-        $product = $this->productRepository->findOrFail($product->getAttribute('id'));
-        $this->productRepository->update($product->id, ['status' => ProductStatusEnum::DELETED->value]);
+        $request->validated();
+        $product = $this->productRepository->findProductById($product->id);
+        $this->productRepository->update($product->id, [
+            'status' => ProductStatusEnum::DELETED->value
+        ]);
         return SuccessResource::make([
-            'message' => trans('messages.successfully_deleted'),
+            'message' => trans('message.successfully_deleted'),
         ]);
     }
 }

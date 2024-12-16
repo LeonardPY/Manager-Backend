@@ -10,11 +10,9 @@ use App\Http\Requests\ProductPicture\StoreProductPictureRequest;
 use App\Http\Resources\ErrorResource;
 use App\Http\Resources\SuccessResource;
 use App\Models\Product;
-use App\Models\User;
 use App\Repositories\Eloquent\ProductDescriptionRepository;
 use App\Repositories\Eloquent\ProductPictureRepository;
 use App\Services\ProductService;
-use Symfony\Component\HttpFoundation\Response;
 
 class ProductDescriptionController extends Controller
 {
@@ -22,20 +20,15 @@ class ProductDescriptionController extends Controller
         private readonly ProductDescriptionRepository $descriptionRepository,
         private readonly ProductPictureRepository     $productPictureRepository,
         private readonly ProductService               $productService
-    )
-    {
+    ) {
     }
-
 
     /** @throws ApiErrorException */
     public function store(
         StoreProductDescriptionRequest $productDescriptionRequest,
-        StoreProductPictureRequest     $productPictureRequest,
-        Product                        $product
-    ): SuccessResource|Response
-    {
-        /** @var Product $product **/
-        /** @var User $user **/
+        StoreProductPictureRequest $productPictureRequest,
+        Product $product
+    ): SuccessResource|ErrorResource {
         $productDescriptionValidated = $productDescriptionRequest->validated();
         $productPictureValidated = $productPictureRequest->validated();
 
@@ -48,17 +41,14 @@ class ProductDescriptionController extends Controller
                 'message' => trans('messages.successfully_created'),
             ]);
         }
-        return (new ErrorResource([
-            'message' => 'Forbidden'
-        ]))->response()->setStatusCode(403);
+        return ErrorResource::make([
+            'message' => trans('messages.access_denied'),
+        ])->setStatusCode(403);
     }
-
 
     /** @throws ApiErrorException */
     public function update(UpdateProductDescriptionRequest $productDescriptionRequest, Product $product): SuccessResource|ErrorResource
     {
-        /** @var Product $product **/
-        /** @var User $user **/
         $productDescriptionValidated = $productDescriptionRequest->validated();
         $user = authUser();
 

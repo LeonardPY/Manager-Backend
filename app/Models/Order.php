@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Casts\DateFormatCast;
+use App\Enums\OrderStatus;
 use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +20,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int user_address_id
  * @property int status
  * @property array shipping_data
+ * @property string currency
  * @property float total_price
+ * @property OrderProduct[] $orderProducts
+ * @property User $department
+ * @property User $user
  */
 class Order extends Model
 {
@@ -38,11 +44,16 @@ class Order extends Model
         'refunded_price'
     ];
 
-    protected $casts = [
-        'shipping_data' => 'json',
-        'shipping_cost' => 'decimal:2',
-        'insurance_cost' => 'decimal:2'
-    ];
+    public function casts(): array
+    {
+        return [
+            'shipping_data' => 'json',
+            'shipping_cost' => 'decimal:2',
+            'insurance_cost' => 'decimal:2',
+            'created_at' => DateFormatCast::class,
+            'updated_at' => DateFormatCast::class,
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -66,6 +77,6 @@ class Order extends Model
 
     public function haveProcessAccess(int $userId): bool
     {
-        return $this->user_id === $userId && $this->status === \App\Enums\OrderStatus::IN_CART->value;
+        return $this->user_id === $userId && $this->status === OrderStatus::IN_CART->value;
     }
 }

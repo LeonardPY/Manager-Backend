@@ -43,7 +43,6 @@ class UserController extends Controller
     public function store(StoreUserRequest $request): SuccessResource
     {
         $data = $this->userService->uploadUserLogo($request->validated());
-
         $user = $this->userRepository->create($data);
 
         return SuccessResource::make([
@@ -63,7 +62,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user->update($data);
+        $this->userRepository->update($user->id, $data);
 
         return SuccessResource::make([
             'message' => trans('message.successfully_updated'),
@@ -73,7 +72,9 @@ class UserController extends Controller
 
     public function destroy(User $user): SuccessResource
     {
-        $user->update(['status' => UserStatusEnum::DELETED->value]);
+        $this->userRepository->update($user->id, [
+            'status' => UserStatusEnum::DELETED->value
+        ]);
 
         return SuccessResource::make([
             'message' => trans('message.successfully_deleted'),

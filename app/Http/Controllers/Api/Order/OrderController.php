@@ -23,22 +23,20 @@ use Illuminate\Support\Facades\Gate;
 class OrderController extends Controller
 {
     public function __construct(
-        private readonly OrderService                           $orderService,
-        private readonly OrderRepositoryInterface               $orderRepository,
-        private readonly OrderProductRepositoryInterface        $orderProductRepository,
+        private readonly OrderProductRepositoryInterface $orderProductRepository,
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly OrderService $orderService,
     ) {
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
+    /** @throws BindingResolutionException|ApiErrorException */
     public function index(FilterOrderRequest $request): PaginationResource
     {
         $validated = $request->validated();
 
         $filter = app()->make(OrderFilter::class, ['queryParams' => array_filter($validated)]);
 
-        $orders = $this->orderRepository->getUserOrders(auth()->id(), $filter);
+        $orders = $this->orderRepository->getUserOrders(authUser()->id, $filter);
 
         return PaginationResource::make([
             'data' => OrderResource::collection($orders),
@@ -46,13 +44,15 @@ class OrderController extends Controller
         ]);
     }
 
+    /** @throws ApiErrorException */
     public function store(StoreOrderRequest $request): SuccessResource
     {
         $data = $request->validated();
-        $order = $this->orderProductRepository->updateOrCreate(['user_id' => auth()->id(), 'department_id' => $data['department_id']],[]);
-
+        $order = $this->orderProductRepository->updateOrCreate([
+            'user_id' => authUser()->id,
+            'department_id' => $data['department_id']
+        ],[]);
         $price = $this->orderService->calculate($order);
-
         return SuccessResource::make([
             'data' => [
                 'order' => OrderResource::make($order),
@@ -61,13 +61,12 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * @throws AccessDeniedException
-     */
+    /** @throws AccessDeniedException|ApiErrorException */
     public function update(UpdateOrderRequest $request, Order $order): SuccessResource
     {
         $data = $request->validated();
-        $this->orderService->haveProcessAccess($order, auth()->id());
+        $this->orderService->haveProcessAccess($order, authUser()->id);
+        /** @var Order $order */
         $order = $this->orderRepository->getOrderById($order->id);
         $data = $this->orderService->userAddresses($data);
         $order->update($data);
@@ -86,6 +85,7 @@ class OrderController extends Controller
     /** @throws ApiErrorException */
     public function show(Order $order): SuccessResource|ErrorResource
     {
+        /** @var Order $order */
         $order = $this->orderRepository->getOrderById($order->id);
         $user = authUser();
         if (!Gate::forUser($user)->allows('authorize', $order)) {
