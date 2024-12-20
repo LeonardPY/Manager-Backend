@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\Department\ProductDescriptionController;
 use App\Http\Controllers\Api\Department\ProductPictureController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Order\OrderProductController;
+use App\Http\Controllers\Api\Refund\Factory\FactoryRefundOrderController;
+use App\Http\Controllers\Api\Refund\Store\StoreRefundOrderController;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\UserAddressController;
 use App\Http\Controllers\VideoUploadController;
@@ -34,8 +36,8 @@ Route::middleware(['auth:sanctum','verified','admin',])->prefix('admin')->group(
 });
 
 
-//api/department
-Route::middleware(['auth:sanctum','verified','department'])->prefix('department')->group(function () {
+//api/department Factory
+Route::middleware(['auth:sanctum', 'verified', 'department_store'])->prefix('department')->group(function () {
     //Create Category
     Route::apiResource('/categories', CategoryController::class, ['store', 'index', 'show', 'destroy']);
     Route::post('/categories/{category}', [CategoryController::class, 'update']);
@@ -48,11 +50,18 @@ Route::middleware(['auth:sanctum','verified','department'])->prefix('department'
     Route::post('/product/{product}/description', [ProductDescriptionController::class, 'store']);
     Route::put('/product/{product}/description', [ProductDescriptionController::class, 'update']);
     Route::delete('/product/productPicture/{productPicture}', [ProductPictureController::class, 'destroy']);
+    Route::get('/order-refund', [FactoryRefundOrderController::class, 'index']);
+});
 
+//api/department Store
+Route::middleware(['auth:sanctum', 'verified', 'department_store'])->prefix('department/store')->group(function () {
     //Order
     Route::apiResource('/order', OrderController::class);
     //OrderProduct
     Route::apiResource('/order-product', OrderProductController::class)->only(['store', 'update', 'destroy']);
+    //Order Refund
+    Route::post('/order-refund', [StoreRefundOrderController::class, 'store']);
+    Route::get('/order-refund', [StoreRefundOrderController::class, 'index']);
 });
 
 //user

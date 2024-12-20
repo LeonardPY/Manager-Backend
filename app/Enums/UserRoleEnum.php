@@ -9,6 +9,8 @@ enum UserRoleEnum : int
     case DEPARTMENT_STORE = 3;
     case DEPARTMENT_FACTORY = 4;
 
+    const STORE = 'store';
+    const FACTORY = 'factory';
     public function getRole(): string
     {
         return match ($this->value) {

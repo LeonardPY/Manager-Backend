@@ -9,7 +9,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-readonly class DepartmentMiddleware
+readonly class DepartmentFactoryMiddleware
 {
     /**
      * Handle an incoming request.
@@ -19,7 +19,7 @@ readonly class DepartmentMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (authUser()->user_role_id != UserRoleEnum::USER) {
+        if (authUser()->user_role_id == UserRoleEnum::DEPARTMENT_FACTORY) {
             return $next($request);
         }
         return (new ErrorResource([

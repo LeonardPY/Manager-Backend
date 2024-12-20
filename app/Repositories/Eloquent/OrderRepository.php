@@ -20,7 +20,7 @@ final class OrderRepository extends BaseRepository implements OrderRepositoryInt
         return $this->model->with('orderProducts')->where('user_id', $userId)->filter($filter)->paginate(25);
     }
 
-    public function getOrderById(int $id): object
+    public function getOrderById(int $id): Order
     {
         return $this->model->with(['user' => function ($query) {
             return $query->select(['id', 'name', 'email']);
@@ -31,5 +31,12 @@ final class OrderRepository extends BaseRepository implements OrderRepositoryInt
                 return $query->select('id', 'name', 'price', 'product_code', 'slug', 'discount_percent')->with('mainPicture');
             }]);
         }])->findOrFail($id);
+    }
+
+    public function getOrderByIdAndUserId(int $id, int $userId): Order
+    {
+        return $this->model->where('id', $id)->with(['user' => function ($query) use ($userId) {
+            return $query->where('id', $userId);
+        }])->firstOrFail();
     }
 }

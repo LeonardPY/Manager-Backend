@@ -8,6 +8,8 @@ use App\Repositories\Eloquent\OrderProductRepository;
 use App\Repositories\Eloquent\OrderRepository;
 use App\Repositories\Eloquent\ProductDescriptionRepository;
 use App\Repositories\Eloquent\ProductPictureRepository;
+use App\Repositories\Eloquent\RefundOrderProductRepository;
+use App\Repositories\Eloquent\RefundOrderRepository;
 use App\Repositories\Eloquent\ResetPasswordRepository;
 use App\Repositories\Eloquent\UserRepository;
 use App\Repositories\Eloquent\CategoryRepository;
@@ -21,6 +23,8 @@ use App\Repositories\OrderProductRepositoryInterface as OrderProductRepositoryCo
 use App\Repositories\OrderRepositoryInterface as OrderRepositoryContract;
 use App\Repositories\ProductDescriptionRepositoryInterface as ProductDescriptionRepositoryContract;
 use App\Repositories\ProductPictureRepositoryInterface as ProductPictureRepositoryContract;
+use App\Repositories\RefundOrderProductRepositoryInterface;
+use App\Repositories\RefundOrderRepositoryInterface;
 use App\Repositories\ResetPasswordRepositoryInterface as ResetPasswordRepositoryContract;
 use App\Repositories\UserRepositoryInterface as UserRepositoryContract;
 use App\Repositories\CategoryRepositoryInterface as CategoryRepositoryContract;
@@ -32,9 +36,7 @@ use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
+    /** Register services.*/
     public function register(): void
     {
         $this->app->bind(UserRepositoryContract::class, UserRepository::class);
@@ -48,11 +50,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ResetPasswordRepositoryContract::class, ResetPasswordRepository::class);
         $this->app->bind(OrderRepositoryContract::class, OrderRepository::class);
         $this->app->bind(OrderProductRepositoryContract::class, OrderProductRepository::class);
+        $this->app->bind(RefundOrderRepositoryInterface::class, RefundOrderRepository::class);
+        $this->app->bind(RefundOrderProductRepositoryInterface::class, RefundOrderProductRepository::class);
     }
 
-    /**
-     * Bootstrap services.
-     */
+    /** Bootstrap services */
     public function boot(): void
     {
         //

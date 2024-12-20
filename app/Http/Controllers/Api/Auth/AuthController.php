@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\LogoutRequest;
 use App\Http\Resources\ErrorResource;
 use App\Http\Resources\SuccessResource;
 use App\Http\Resources\User\UserResource;
+use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Hashing\HashManager;
 use Illuminate\Validation\ValidationException;
@@ -24,11 +25,11 @@ class AuthController extends Controller
     /**
      * @param LoginRequest $request
      * @return SuccessResource|ErrorResource
-     * @throws ValidationException
      */
     public function login(LoginRequest $request): SuccessResource|ErrorResource
     {
-        $validated = $request->validated();;
+        $validated = $request->validated();
+        /** @var User $user */
         $user = $this->userRepository->findByEmail($validated['email']);
         if (!$user || !$this->hashManager->check($validated['password'], $user->password)) {
             return ErrorResource::make([

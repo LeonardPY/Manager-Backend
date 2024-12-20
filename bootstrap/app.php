@@ -1,6 +1,7 @@
 <?php
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\DepartmentMiddleware;
+use App\Http\Middleware\DepartmentFactoryMiddleware;
+use App\Http\Middleware\DepartmentStoreMiddleware;
 use App\Http\Middleware\LocalizationMiddleware;
 use App\Http\Resources\ErrorResource;
 use Illuminate\Auth\AuthenticationException;
@@ -20,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin' => AdminMiddleware::class,
-            'department' => DepartmentMiddleware::class,
+            'department_factory' => DepartmentFactoryMiddleware::class,
+            'department_store' => DepartmentStoreMiddleware::class,
             'localization' => LocalizationMiddleware::class
         ]);
     })

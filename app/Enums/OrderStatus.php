@@ -9,6 +9,9 @@ enum OrderStatus: int
     case SHIPPED = 3;
     case DELIVERED = 4;
 
+    case CONFIRM_STORE = 5;
+    case CONFIRM_DELIVERY = 6;
+
     public static function refundableStatuses(): array
     {
         return [
