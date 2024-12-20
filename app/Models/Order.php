@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property array shipping_data
  * @property string currency
  * @property float total_price
+ * @property string $created_at
+ * @property string $updated_at
  * @property OrderProduct[] $orderProducts
  * @property User $department
  * @property User $user
@@ -78,5 +80,10 @@ class Order extends Model
     public function haveProcessAccess(int $userId): bool
     {
         return $this->user_id === $userId && $this->status === OrderStatus::IN_CART->value;
+    }
+
+    public function haveProcessAccessRefund(int $userId): bool
+    {
+        return $this->user_id === $userId && $this->status === OrderStatus::SHIPPED->value;
     }
 }

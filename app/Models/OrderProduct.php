@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property $product_id
  * @property $quantity
  * @property $price
+ * @property Order $order
 */
 class OrderProduct extends Model
 {
