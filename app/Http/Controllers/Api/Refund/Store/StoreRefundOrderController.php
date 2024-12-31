@@ -9,6 +9,7 @@ use App\Http\Requests\RefundOrder\RefundOrderFilterRequest;
 use App\Http\Requests\RefundOrder\RefundOrderRequest;
 use App\Http\Resources\Refund\OrderRefundResource;
 use App\Http\Resources\SuccessResource;
+use App\Models\Order;
 use App\Repositories\OrderProductRepositoryInterface;
 use App\Repositories\RefundOrderRepositoryInterface;
 use App\Services\Refund\RefundOrderService;
@@ -40,7 +41,7 @@ class StoreRefundOrderController extends Controller
     }
 
     /** @throws ApiErrorException */
-    public function store(RefundOrderRequest $request): SuccessResource
+    public function store(RefundOrderRequest $request, Order $order): SuccessResource
     {
         $data = $request->validated();
         $user = authUser();

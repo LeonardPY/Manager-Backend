@@ -3,7 +3,7 @@
 namespace App\Repositories\Eloquent;
 
 use App\Enums\UserStatusEnum;
-use App\Http\Filters\UserFilter;
+use App\Http\Filters\User\UserFilter;
 use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 
@@ -17,9 +17,16 @@ final class UserRepository extends BaseRepository implements UserRepositoryInter
     // admin
     public function getUsers(UserFilter $filter)
     {
-        return $this->model->with('country')
+        return $this->model->with(['country', 'address'])
+            ->filter($filter)->paginate($filter->LIMIT, ['*'], 'users_page', $filter->PAGE);
+    }
+
+    public function getUsersByRoleId(int $roleId, UserFilter $filter)
+    {
+        return $this->model->with(['country', 'address'])
+            ->where('user_role_id', $roleId)
             ->whereNot('status', UserStatusEnum::DELETED->value)
-            ->filter($filter)->paginate($filter->PER_PAGE, ['*'], 'users_page', $filter->PAGE);
+            ->filter($filter)->paginate($filter->LIMIT, ['*'], 'users_page', $filter->PAGE);
     }
     public function findByEmail(string $email): mixed
     {
@@ -29,10 +36,9 @@ final class UserRepository extends BaseRepository implements UserRepositoryInter
         ])->firstOrFail();
     }
 
-
     public function users(): object
     {
-        return $this->model->whereNot('status', UserStatusEnum::DELETED->value)->paginate(50);
+        return $this->model->whereNot('status', UserStatusEnum::DELETED->value)->paginate(25);
     }
 
     public function findById(int $id)

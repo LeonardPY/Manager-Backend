@@ -38,4 +38,6 @@ return [
     'address' => 'Օգտատերը հասցե չունի',
     'access_denied' => 'մուտքը մերժված է!',
     'department_conflict' => 'այս ապրանքը և բաժինը հակասում են',
+    'address_not_found' => 'Ձեր հասցեն նշված չէ',
+    'successfully_confirmed' => 'Հաջողությամբ հաստատվեց'
 ];

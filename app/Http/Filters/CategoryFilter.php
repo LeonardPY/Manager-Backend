@@ -2,11 +2,13 @@
 
 namespace App\Http\Filters;
 
+use App\Http\Filters\FilterTraits\FilterHasPagination;
 use Illuminate\Database\Eloquent\Builder;
 
 class CategoryFilter extends AbstractFilters
 {
 
+    use FilterHasPagination;
     public const NAME = 'name';
     public const NAME_AM = 'name_am';
 
@@ -19,7 +21,8 @@ class CategoryFilter extends AbstractFilters
         return [
             self::NAME    => [$this, 'name'],
             self::NAME_AM   => [$this, 'name_am'],
-            self::PER_PAGE => [$this, 'perPage']
+            self::PAGE  => [$this, 'page'],
+            self::LIMIT => [$this, 'limit'],
         ];
     }
 

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories\Eloquent;
 
+use App\Http\Filters\Department\OrderDepartmentFilter;
 use App\Http\Filters\OrderFilter;
 use App\Models\Order;
 use App\Repositories\OrderRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 final class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 {
@@ -17,7 +19,9 @@ final class OrderRepository extends BaseRepository implements OrderRepositoryInt
 
     public function getUserOrders(int $userId, OrderFilter $filter): object
     {
-        return $this->model->with('orderProducts')->where('user_id', $userId)->filter($filter)->paginate(25);
+        return $this->model->with('department')->where([
+            ['user_id', '=', $userId],
+        ])->filter($filter)->paginate($filter->LIMIT, '*', 'page', $filter->PAGE);
     }
 
     public function getOrderById(int $id): Order
@@ -38,5 +42,13 @@ final class OrderRepository extends BaseRepository implements OrderRepositoryInt
         return $this->model->where('id', $id)->with(['user' => function ($query) use ($userId) {
             return $query->where('id', $userId);
         }])->firstOrFail();
+    }
+
+    public function getDepartmentOrders(int $departmentId, OrderDepartmentFilter $filter): LengthAwarePaginator
+    {
+        return $this->model->with('department')->where([
+            ['department_id', '=', $departmentId],
+        ])->filter($filter)
+            ->paginate($filter->LIMIT, '*', 'page', $filter->PAGE);
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\Order;
 use App\Exceptions\AccessDeniedException;
 use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
-use App\Http\Filters\OrderFilter;
 use App\Http\Requests\Order\FilterOrderRequest;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
@@ -19,6 +18,7 @@ use App\Repositories\OrderRepositoryInterface;
 use App\Services\OrderService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Gate;
+use Throwable;
 
 class OrderController extends Controller
 {
@@ -32,9 +32,7 @@ class OrderController extends Controller
     /** @throws BindingResolutionException|ApiErrorException */
     public function index(FilterOrderRequest $request): PaginationResource
     {
-        $validated = $request->validated();
-
-        $filter = app()->make(OrderFilter::class, ['queryParams' => array_filter($validated)]);
+        $filter = $this->orderService->makeFilter($request->validated());
 
         $orders = $this->orderRepository->getUserOrders(authUser()->id, $filter);
 
@@ -44,15 +42,15 @@ class OrderController extends Controller
         ]);
     }
 
-    /** @throws ApiErrorException */
+    /** @throws ApiErrorException|Throwable */
     public function store(StoreOrderRequest $request): SuccessResource
     {
         $data = $request->validated();
-        $order = $this->orderProductRepository->updateOrCreate([
-            'user_id' => authUser()->id,
-            'department_id' => $data['department_id']
-        ],[]);
+
+        $order = $this->orderService->makeOrderProduct(authUser(), $data);
+
         $price = $this->orderService->calculate($order);
+
         return SuccessResource::make([
             'data' => [
                 'order' => OrderResource::make($order),
@@ -69,7 +67,7 @@ class OrderController extends Controller
         /** @var Order $order */
         $order = $this->orderRepository->getOrderById($order->id);
         $data = $this->orderService->userAddresses($data);
-        $order->update($data);
+        $this->orderRepository->update($order->id, $data);
 
         $price = $this->orderService->calculate($order);
 
@@ -79,7 +77,6 @@ class OrderController extends Controller
                 'calculate' => $price
             ]
         ]);
-
     }
 
     /** @throws ApiErrorException */
@@ -93,7 +90,6 @@ class OrderController extends Controller
                 'message' => trans('message.access_denied')
             ])->setStatusCode(403);
         }
-
         $price = $this->orderService->calculate($order);
 
         return SuccessResource::make([
@@ -117,5 +113,4 @@ class OrderController extends Controller
             'message' => trans('message.successfully_deleted'),
         ]);
     }
-
 }

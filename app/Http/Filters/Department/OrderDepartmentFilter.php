@@ -1,21 +1,24 @@
 <?php
 
-namespace App\Http\Filters;
+namespace App\Http\Filters\Department;
 
+use App\Http\Filters\AbstractFilters;
 use App\Http\Filters\FilterTraits\FilterHasPagination;
 use Illuminate\Database\Eloquent\Builder;
 
-class OrderFilter extends AbstractFilters
+class
+OrderDepartmentFilter extends AbstractFilters
 {
     use FilterHasPagination;
     public const ORDER_STATUS = 'status';
-    public const EXCEPT_ORDER = 'except';
+
+    public const NAME = 'name';
 
     protected function getCallbacks(): array
     {
         return [
             self::ORDER_STATUS  => [$this, 'status'],
-            self::EXCEPT_ORDER  => [$this, 'exceptOrderStatus'],
+            self::NAME  => [$this, 'name'],
             self::PAGE  => [$this, 'page'],
             self::LIMIT => [$this, 'limit'],
         ];
@@ -26,8 +29,10 @@ class OrderFilter extends AbstractFilters
         $builder->where('status', $value);
     }
 
-    public function exceptOrderStatus(Builder $builder, int $value): void
+    public function name(Builder $builder, string $value): void
     {
-        $builder->where('stats', '!=', $value);
+        $builder->whereHas('user', function (Builder $builder) use ($value) {
+            $builder->where('name', 'like', '%' . $value . '%');
+        });
     }
 }

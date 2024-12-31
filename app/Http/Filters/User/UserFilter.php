@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Filters;
+namespace App\Http\Filters\User;
 
+use App\Http\Filters\AbstractFilters;
 use App\Http\Filters\FilterTraits\FilterHasPagination;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,9 +17,8 @@ class UserFilter extends AbstractFilters
         return [
             self::NAME        => [$this, 'name'],
             self::LAST_NAME   => [$this, 'last_name'],
-
-            self::PAGE        => [$this, 'page'],
-            self::PER_PAGE    => [$this, 'limit'],
+            self::PAGE  => [$this, 'page'],
+            self::LIMIT => [$this, 'limit'],
         ];
     }
 
