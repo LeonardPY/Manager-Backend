@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Order;
 
+use App\Enums\OrderStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class FilterOrderRequest extends FormRequest
 {
@@ -25,7 +27,8 @@ class FilterOrderRequest extends FormRequest
         return [
             'status' => [
                 'nullable',
-                'int'
+                'int',
+                new Enum(OrderStatus::class),
             ]
         ];
     }

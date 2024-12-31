@@ -21,7 +21,8 @@ final class CategoryRepository extends BaseRepository implements CategoryReposit
                 ['user_id', $userId],
                 ['parent_id', null],
             ])
-            ->filter($filter)->paginate($filter->PER_PAGE);
+            ->filter($filter)
+            ->paginate($filter->LIMIT, '*', 'page', $filter->PAGE);
     }
     public function slugExists(string $slug): bool
     {

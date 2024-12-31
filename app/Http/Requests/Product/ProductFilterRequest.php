@@ -47,7 +47,12 @@ class ProductFilterRequest extends FormRequest
                 'nullable',
                 'string'
             ],
-            'per_page' => [
+            'page' => [
+                'nullable',
+                'int',
+                'min:1'
+            ],
+            'limit' => [
                 'nullable',
                 'int',
                 'min:1'

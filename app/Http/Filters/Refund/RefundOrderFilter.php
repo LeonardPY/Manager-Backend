@@ -3,12 +3,12 @@
 namespace App\Http\Filters\Refund;
 
 use App\Http\Filters\AbstractFilters;
-use App\Http\Filters\Trait\PaginationFilter;
+use App\Http\Filters\FilterTraits\FilterHasPagination;
 use Illuminate\Database\Eloquent\Builder;
 
 class RefundOrderFilter extends AbstractFilters
 {
-    use PaginationFilter;
+    use FilterHasPagination;
     public const STATUS = 'status';
     protected function getCallbacks(): array
     {

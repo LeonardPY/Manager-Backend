@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\UserStatusEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Filters\UserFilter;
+use App\Http\Filters\User\UserFilter;
 use App\Http\Requests\User\Admin\FilterUserRequest;
 use App\Http\Requests\User\Admin\StoreUserRequest;
 use App\Http\Requests\User\Admin\UpdateUserRequest;
@@ -46,7 +46,7 @@ class UserController extends Controller
         $user = $this->userRepository->create($data);
 
         return SuccessResource::make([
-            'data' => $user
+            'data' => UserResource::make($user)
         ]);
     }
 

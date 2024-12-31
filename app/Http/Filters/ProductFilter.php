@@ -2,18 +2,18 @@
 
 namespace App\Http\Filters;
 
+use App\Http\Filters\FilterTraits\FilterHasPagination;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProductFilter extends AbstractFilters
 {
-
+    use FilterHasPagination;
     public const  NAME = 'name';
     public const  NAME_AM = 'name_am';
     public const  CATEGORY = 'category';
     public const  BRAND_ID = 'brand_id';
     public const  PRICE_FROM = 'price_from';
     public const  PRICE_TO = 'price_to';
-    public const  PER_PAGE = 'per_page';
     public int $PER_PAGE = 25;
 
     protected function getCallbacks(): array
@@ -25,7 +25,8 @@ class ProductFilter extends AbstractFilters
             self::BRAND_ID   => [$this, 'brandId'],
             self::PRICE_FROM => [$this, 'priceFrom'],
             self::PRICE_TO   => [$this, 'priceTo'],
-            self::PER_PAGE   => [$this, 'perPage']
+            self::PAGE  => [$this, 'page'],
+            self::LIMIT => [$this, 'limit'],
         ];
     }
 

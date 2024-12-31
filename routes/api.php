@@ -8,9 +8,12 @@ use App\Http\Controllers\Api\Department\ProductController;
 use App\Http\Controllers\Api\Department\ProductDescriptionController;
 use App\Http\Controllers\Api\Department\ProductPictureController;
 use App\Http\Controllers\Api\Order\OrderController;
+use App\Http\Controllers\Api\Department\OrderController as DepartmentOrderController;
+use App\Http\Controllers\Api\Order\OrderProcessController;
 use App\Http\Controllers\Api\Order\OrderProductController;
 use App\Http\Controllers\Api\Refund\Factory\FactoryRefundOrderController;
 use App\Http\Controllers\Api\Refund\Store\StoreRefundOrderController;
+use App\Http\Controllers\Api\User\DepartmentController;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\UserAddressController;
 use App\Http\Controllers\VideoUploadController;
@@ -37,7 +40,7 @@ Route::middleware(['auth:sanctum','verified','admin',])->prefix('admin')->group(
 
 
 //api/department Factory
-Route::middleware(['auth:sanctum', 'verified', 'department_store'])->prefix('department')->group(function () {
+Route::middleware(['auth:sanctum', 'verified', 'department_factory'])->prefix('department')->group(function () {
     //Create Category
     Route::apiResource('/categories', CategoryController::class, ['store', 'index', 'show', 'destroy']);
     Route::post('/categories/{category}', [CategoryController::class, 'update']);
@@ -50,17 +53,26 @@ Route::middleware(['auth:sanctum', 'verified', 'department_store'])->prefix('dep
     Route::post('/product/{product}/description', [ProductDescriptionController::class, 'store']);
     Route::put('/product/{product}/description', [ProductDescriptionController::class, 'update']);
     Route::delete('/product/productPicture/{productPicture}', [ProductPictureController::class, 'destroy']);
+
+    //Order
+    Route::apiResource('/orders', DepartmentOrderController::class)->only(['index', 'show', 'update']);
+
+    //Refund Order
     Route::get('/order-refund', [FactoryRefundOrderController::class, 'index']);
 });
 
 //api/department Store
 Route::middleware(['auth:sanctum', 'verified', 'department_store'])->prefix('department/store')->group(function () {
+    //Department
+    Route::get('/', [DepartmentController::class, 'index']);
+    Route::get('/{user}', [DepartmentController::class, 'show'])->where('user', '[0-9]+');
     //Order
-    Route::apiResource('/order', OrderController::class);
+    Route::apiResource('/orders', OrderController::class);
+    Route::post('/order-confirm/{order}', [OrderProcessController::class, 'confirmOrder']);
     //OrderProduct
-    Route::apiResource('/order-product', OrderProductController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('/order-product', OrderProductController::class)->only(['update', 'destroy']);
     //Order Refund
-    Route::post('/order-refund', [StoreRefundOrderController::class, 'store']);
+    Route::post('/order-refund/{order}', [StoreRefundOrderController::class, 'store']);
     Route::get('/order-refund', [StoreRefundOrderController::class, 'index']);
 });
 

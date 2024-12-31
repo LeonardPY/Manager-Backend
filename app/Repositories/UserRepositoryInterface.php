@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Http\Filters\UserFilter;
+use App\Http\Filters\User\UserFilter;
 
 interface UserRepositoryInterface extends BaseRepositoryInterface
 {

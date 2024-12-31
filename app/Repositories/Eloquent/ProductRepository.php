@@ -21,7 +21,8 @@ final class ProductRepository extends BaseRepository implements ProductRepositor
             return $query->select('id', 'product_id','short_description');
         }, 'category'=> function($query) {
            return $query->select('id', 'name');
-        }])->whereNot('status', ProductStatusEnum::DELETED->value)->filter($filter)->paginate($filter->PER_PAGE);
+        }])->whereNot('status', ProductStatusEnum::DELETED->value)->filter($filter)
+            ->paginate($filter->LIMIT, '*', 'page', $filter->PAGE);
     }
 
     public function slugExists(string $slug): bool
