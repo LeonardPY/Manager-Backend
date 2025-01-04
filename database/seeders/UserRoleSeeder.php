@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\UserRole;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserRoleSeeder extends Seeder
@@ -28,7 +27,11 @@ class UserRoleSeeder extends Seeder
             ],
             [
                 'id' => 4,
-                'role' => 'department_factory'
+                'role' => 'organization'
+            ],
+            [
+                'id' => 5,
+                'role' => 'worker'
             ]
         ];
         UserRole::query()->insertOrIgnore($userRoles);

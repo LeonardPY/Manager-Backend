@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -24,6 +25,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $logo
  * @property Category $category
  * @property Country $country
+ * @property Worker $worker
 */
 class User extends Authenticatable implements  MustVerifyEmail
 {
@@ -77,8 +79,15 @@ class User extends Authenticatable implements  MustVerifyEmail
         return $this->hasMany(Category::class, 'user_id', 'id');
     }
 
+    /** @return HasMany */
     public function address(): HasMany
     {
         return $this->hasMany(UserAddress::class, 'user_id', 'id');
+    }
+
+    /** @return HasOne */
+    public function worker(): hasOne
+    {
+        return $this->hasOne(Worker::class, 'user_id', 'id');
     }
 }

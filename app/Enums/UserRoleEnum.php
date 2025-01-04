@@ -7,16 +7,16 @@ enum UserRoleEnum : int
     case  USER = 1;
     case  ADMIN = 2;
     case DEPARTMENT_STORE = 3;
-    case DEPARTMENT_FACTORY = 4;
+    case ORGANIZATION = 4;
 
-    const STORE = 'store';
-    const FACTORY = 'factory';
+    case WORKER = 5;
     public function getRole(): string
     {
         return match ($this->value) {
             self::ADMIN->value => 'admin',
             self::DEPARTMENT_STORE->value => 'department_store',
-            self::DEPARTMENT_FACTORY->value => 'department_factory',
+            self::ORGANIZATION->value => 'organization',
+            self::WORKER->value => 'worker',
             default => 'user',
         };
     }

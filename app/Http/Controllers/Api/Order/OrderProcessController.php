@@ -32,4 +32,17 @@ class OrderProcessController extends Controller
             'message' => trans('message.successfully_confirmed')
         ]);
     }
+
+    /**
+     * Worker Shipped Order
+     * @throws ApiErrorException
+     */
+    public function workerOrderShipped(Order $order): SuccessResource
+    {
+        $this->orderService->workerHasAccess(authUser(), $order);
+        $this->orderProductRepository->update($order->id, ['status' => OrderStatus::DELIVERED->value]);
+        return SuccessResource::make([
+            'message' => trans('message.successfully_confirmed')
+        ]);
+    }
 }

@@ -92,4 +92,12 @@ readonly class OrderService
             throw new ApiErrorException(trans('message.address_not_found'));
         }
     }
+
+    /** @throws ApiErrorException */
+    public function workerHasAccess(User $user, Order $order): void
+    {
+        if ($order->department_id !== $user->worker->organization_id) {
+            throw new ApiErrorException(trans('message.address_not_found'));
+        };
+    }
 }

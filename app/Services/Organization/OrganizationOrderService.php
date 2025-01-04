@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Department;
+namespace App\Services\Organization;
 
 use App\Enums\OrderStatus;
 use App\Http\Filters\Department\OrderDepartmentFilter;
@@ -8,7 +8,7 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
-class DepartmentOrderService
+class OrganizationOrderService
 {
     /** @throws BindingResolutionException */
     public function ordersWithFilter(array $filterData): OrderDepartmentFilter
