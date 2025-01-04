@@ -18,6 +18,7 @@ use App\Repositories\Eloquent\ProductMainPictureRepository;
 use App\Repositories\Eloquent\UserAddressRepository;
 
 //Interface
+use App\Repositories\Eloquent\WorkerRepository;
 use App\Repositories\FavoriteRepositoryInterface as FavoriteRepositoryContract;
 use App\Repositories\OrderProductRepositoryInterface as OrderProductRepositoryContract;
 use App\Repositories\OrderRepositoryInterface as OrderRepositoryContract;
@@ -32,6 +33,7 @@ use App\Repositories\ProductRepositoryInterface as ProductRepositoryContract;
 use App\Repositories\ProductMainPictureRepositoryInterface as ProductMainPictureRepositoryContract;
 use App\Repositories\UserAddressRepositoryInterface as UserAddressRepositoryContract;
 
+use App\Repositories\WorkerRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -52,6 +54,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(OrderProductRepositoryContract::class, OrderProductRepository::class);
         $this->app->bind(RefundOrderRepositoryInterface::class, RefundOrderRepository::class);
         $this->app->bind(RefundOrderProductRepositoryInterface::class, RefundOrderProductRepository::class);
+        $this->app->bind(WorkerRepositoryInterface::class, WorkerRepository::class);
     }
 
     /** Bootstrap services */

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Refund\Factory;
+namespace App\Http\Controllers\Api\Refund\Organization;
 
 use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
@@ -11,7 +11,7 @@ use App\Http\Resources\SuccessResource;
 use App\Repositories\RefundOrderRepositoryInterface;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
-class FactoryRefundOrderController extends Controller
+class OrganizationRefundOrderController extends Controller
 {
     public function __construct(
         private readonly RefundOrderRepositoryInterface $refundOrderRepository,

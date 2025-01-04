@@ -3,17 +3,18 @@
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
-use App\Http\Controllers\Api\Department\CategoryController;
-use App\Http\Controllers\Api\Department\ProductController;
-use App\Http\Controllers\Api\Department\ProductDescriptionController;
-use App\Http\Controllers\Api\Department\ProductPictureController;
+use App\Http\Controllers\Api\Organization\CategoryController;
+use App\Http\Controllers\Api\Organization\ProductController;
+use App\Http\Controllers\Api\Organization\ProductDescriptionController;
+use App\Http\Controllers\Api\Organization\ProductPictureController;
 use App\Http\Controllers\Api\Order\OrderController;
-use App\Http\Controllers\Api\Department\OrderController as DepartmentOrderController;
+use App\Http\Controllers\Api\Organization\OrderController as DepartmentOrderController;
 use App\Http\Controllers\Api\Order\OrderProcessController;
 use App\Http\Controllers\Api\Order\OrderProductController;
-use App\Http\Controllers\Api\Refund\Factory\FactoryRefundOrderController;
+use App\Http\Controllers\Api\Organization\WorkerController;
+use App\Http\Controllers\Api\Refund\Organization\OrganizationRefundOrderController;
 use App\Http\Controllers\Api\Refund\Store\StoreRefundOrderController;
-use App\Http\Controllers\Api\User\DepartmentController;
+use App\Http\Controllers\Api\User\OrganizationController;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\UserAddressController;
 use App\Http\Controllers\VideoUploadController;
@@ -38,9 +39,14 @@ Route::middleware(['auth:sanctum','verified','admin',])->prefix('admin')->group(
     Route::apiResource('users', UserController::class);
 });
 
+//api/admin
+Route::middleware(['auth:sanctum','verified','worker',])->prefix('worker')->group(function () {
+    Route::put('order/{order}', [OrderProcessController::class, 'workerOrderShipped']);
+});
+
 
 //api/department Factory
-Route::middleware(['auth:sanctum', 'verified', 'department_factory'])->prefix('department')->group(function () {
+Route::middleware(['auth:sanctum', 'verified', 'organization'])->prefix('organization')->group(function () {
     //Create Category
     Route::apiResource('/categories', CategoryController::class, ['store', 'index', 'show', 'destroy']);
     Route::post('/categories/{category}', [CategoryController::class, 'update']);
@@ -58,14 +64,17 @@ Route::middleware(['auth:sanctum', 'verified', 'department_factory'])->prefix('d
     Route::apiResource('/orders', DepartmentOrderController::class)->only(['index', 'show', 'update']);
 
     //Refund Order
-    Route::get('/order-refund', [FactoryRefundOrderController::class, 'index']);
+    Route::get('/order-refund', [OrganizationRefundOrderController::class, 'index']);
+
+    //Workers
+    Route::apiResource('/workers', WorkerController::class);
 });
 
 //api/department Store
 Route::middleware(['auth:sanctum', 'verified', 'department_store'])->prefix('department/store')->group(function () {
     //Department
-    Route::get('/', [DepartmentController::class, 'index']);
-    Route::get('/{user}', [DepartmentController::class, 'show'])->where('user', '[0-9]+');
+    Route::get('/', [OrganizationController::class, 'index']);
+    Route::get('/{user}', [OrganizationController::class, 'show'])->where('user', '[0-9]+');
     //Order
     Route::apiResource('/orders', OrderController::class);
     Route::post('/order-confirm/{order}', [OrderProcessController::class, 'confirmOrder']);

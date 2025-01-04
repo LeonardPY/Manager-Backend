@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Department;
+namespace App\Http\Controllers\Api\Organization;
 
 use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
@@ -10,7 +10,7 @@ use App\Http\Resources\Order\DepartmentOrderResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\SuccessResource;
 use App\Repositories\OrderRepositoryInterface;
-use App\Services\Department\DepartmentOrderService;
+use App\Services\Organization\OrganizationOrderService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class OrderController extends Controller
@@ -18,7 +18,7 @@ class OrderController extends Controller
 
     public function __construct(
         private readonly OrderRepositoryInterface $orderRepository,
-        private readonly DepartmentOrderService $departmentOrderService
+        private readonly OrganizationOrderService $organizationOrderService
     ) {
     }
 
@@ -26,7 +26,7 @@ class OrderController extends Controller
     public function index(OrderFilterRequest $request): PaginationResource
     {
         $filterData = $request->validated();
-        $filter = $this->departmentOrderService->ordersWithFilter($filterData);
+        $filter = $this->organizationOrderService->ordersWithFilter($filterData);
         $orders = $this->orderRepository->getDepartmentOrders(authUser()->id, $filter);
         return PaginationResource::make([
             'data' => DepartmentOrderResource::collection($orders),
@@ -38,7 +38,7 @@ class OrderController extends Controller
     public function show(int $id): SuccessResource
     {
         $order = $this->orderRepository->getOrderById($id);
-        $this->departmentOrderService->hasAccessToOrder(authUser(), $order);
+        $this->organizationOrderService->hasAccessToOrder(authUser(), $order);
 
         return SuccessResource::make([
             'data' => $order
@@ -50,7 +50,7 @@ class OrderController extends Controller
     {
         $data = $request->validated();
         $order = $this->orderRepository->findOrFail($id);
-        $this->departmentOrderService->hasAccessToOrder(authUser(), $order);
+        $this->organizationOrderService->hasAccessToOrder(authUser(), $order);
         $this->orderRepository->update($id, $data);
         return SuccessResource::make([
             'message' => trans('message.successfully_updated')

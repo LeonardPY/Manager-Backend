@@ -1,8 +1,9 @@
 <?php
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\DepartmentFactoryMiddleware;
+use App\Http\Middleware\OrganizationMiddleware;
 use App\Http\Middleware\DepartmentStoreMiddleware;
 use App\Http\Middleware\LocalizationMiddleware;
+use App\Http\Middleware\WorkerMiddleware;
 use App\Http\Resources\ErrorResource;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -21,8 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin' => AdminMiddleware::class,
-            'department_factory' => DepartmentFactoryMiddleware::class,
+            'organization' => OrganizationMiddleware::class,
             'department_store' => DepartmentStoreMiddleware::class,
+            'worker' => WorkerMiddleware::class,
             'localization' => LocalizationMiddleware::class
         ]);
     })

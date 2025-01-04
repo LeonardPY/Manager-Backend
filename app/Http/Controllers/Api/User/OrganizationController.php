@@ -12,14 +12,14 @@ use App\Http\Resources\SuccessResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Repositories\Eloquent\UserRepository;
-use App\Services\Department\DepartmentService;
+use App\Services\Organization\OrganizationService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
-class DepartmentController extends Controller
+class OrganizationController extends Controller
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly DepartmentService $departmentService
+        private readonly OrganizationService $organizationService
     ) {
     }
 
@@ -28,7 +28,7 @@ class DepartmentController extends Controller
     {
         $filterData = $request->validated();
         $filter = app()->make(UserDepartmentFilter::class, ['queryParams' => $filterData]);
-        $users = $this->userRepository->getUsersByRoleId(UserRoleEnum::DEPARTMENT_FACTORY->value, $filter);
+        $users = $this->userRepository->getUsersByRoleId(UserRoleEnum::ORGANIZATION->value, $filter);
         return SuccessResource::make([
             'data' => UserResource::collection($users),
         ]);
@@ -37,7 +37,7 @@ class DepartmentController extends Controller
     /** @throws BindingResolutionException */
     public function show(User $user, ProductFilterRequest $request): SuccessResource
     {
-        $departmentProducts = $this->departmentService->departmentWithProducts(
+        $departmentProducts = $this->organizationService->departmentWithProducts(
             $user,
             $request->validated()
         );

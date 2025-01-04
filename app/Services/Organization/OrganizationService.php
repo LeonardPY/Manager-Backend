@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Department;
+namespace App\Services\Organization;
 
 
 use App\Http\Filters\ProductFilter;
@@ -11,7 +11,7 @@ use App\Repositories\ProductRepositoryInterface;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-readonly class DepartmentService
+readonly class OrganizationService
 {
     public function __construct(
         private ProductRepositoryInterface $productRepository,
